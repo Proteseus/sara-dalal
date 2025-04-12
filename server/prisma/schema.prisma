@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int            @id @default(autoincrement())
+  email             String         @unique
+  passwordHash      String
+  firstName         String?
+  lastName          String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  emailVerified     Boolean        @default(false)
+  verificationToken String?
+  skinProfile       SkinProfile?
+  routines          UserRoutine[]
+  feedback          UserFeedback[]
+  responses         UserResponse[]
+}
+
+model SkinProfile {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @unique
+  user          User     @relation(fields: [userId], references: [id])
+  skinType      String?
+  concerns      String[]
+  allergies     String[]
+  currentRoutine String?
+  lifestyleFactors Json?
+  recommendations Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Product {
+  id              Int            @id @default(autoincrement())
+  name            String
+  brand           String
+  description     String?
+  categoryId      Int?
+  category        Category?      @relation(fields: [categoryId], references: [id])
+  isNatural       Boolean?
+  isGentle        Boolean?
+  price           Float?
+  size            Float?
+  unit            String?
+  skinType        String[]
+  targetConcerns  String[]
+  keyIngredients  String[]
+  ingredients     String[]
+  createdAt       DateTime       @default(now())
+  routineProducts RoutineProduct[]
+  feedback        UserFeedback[]
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  products    Product[]
+}
+
+model UserRoutine {
+  id          Int             @id @default(autoincrement())
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  products    RoutineProduct[]
+}
+
+model RoutineProduct {
+  id          Int         @id @default(autoincrement())
+  routineId   Int
+  routine     UserRoutine @relation(fields: [routineId], references: [id])
+  productId   Int
+  product     Product     @relation(fields: [productId], references: [id])
+  stepOrder   Int
+  timeOfDay   String?     // morning, evening, weekly
+  createdAt   DateTime    @default(now())
+}
+
+model UserFeedback {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  rating    Int      @db.SmallInt
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+model Question {
+  id          Int            @id @default(autoincrement())
+  text        String
+  type        QuestionType
+  options     String[]
+  category    QuestionCategory
+  order       Int
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  responses   UserResponse[]
+}
+
+model UserResponse {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  questionId  Int
+  question    Question  @relation(fields: [questionId], references: [id])
+  answer      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, questionId])
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  RATING
+  NUMERICAL
+  YES_NO
+}
+
+enum QuestionCategory {
+  SKIN_TYPE
+  CONCERNS
+  LIFESTYLE
+  PREFERENCES
+}
