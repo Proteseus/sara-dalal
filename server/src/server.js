@@ -8,17 +8,29 @@ import routineRoutes from './routes/routineRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import { scheduleRoutineReminders } from './utils/notifications.js';
+import { requestLogger, queryLogger } from './utils/logger.js';
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: [
+    {
+      emit: 'event',
+      level: 'query',
+    },
+  ],
+});
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(requestLogger);
+
+// Set up Prisma query logging
+prisma.$on('query', queryLogger);
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -58,7 +70,7 @@ const scheduleReminders = async () => {
 // Schedule reminders every day at 8 AM
 setInterval(scheduleReminders, 24 * 60 * 60 * 1000);
 // Initial run
-scheduleReminders();
+// scheduleReminders();
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
