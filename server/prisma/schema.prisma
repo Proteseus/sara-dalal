@@ -54,7 +54,7 @@ model Product {
   keyIngredients  String[]
   ingredients     String[]
   createdAt       DateTime       @default(now())
-  routineProducts RoutineProduct[]
+  routineSteps    RoutineStep[]
   feedback        UserFeedback[]
 }
 
@@ -71,21 +71,21 @@ model UserRoutine {
   userId      Int
   user        User            @relation(fields: [userId], references: [id])
   name        String
-  description String?
   isActive    Boolean         @default(true)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  products    RoutineProduct[]
+  steps       RoutineStep[]
 }
 
-model RoutineProduct {
+model RoutineStep {
   id          Int         @id @default(autoincrement())
   routineId   Int
   routine     UserRoutine @relation(fields: [routineId], references: [id])
   productId   Int
   product     Product     @relation(fields: [productId], references: [id])
-  stepOrder   Int
-  timeOfDay   String?     // morning, evening, weekly
+  order       Int
+  time        String?
+  notes       String?
   createdAt   DateTime    @default(now())
 }
 
