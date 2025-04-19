@@ -17,7 +17,8 @@ export const getDashboardData = async (req, res) => {
       where: { id: userId },
       select: {
         id: true,
-        name: true,
+        firstName: true,
+        lastName: true,
         email: true,
         skinProfile: true,
         createdAt: true
