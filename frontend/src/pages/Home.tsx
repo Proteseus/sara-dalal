@@ -33,7 +33,7 @@ const Home: React.FC = () => {
             </div>
             <div className="hidden md:block">
               <img 
-                src="https://images.pexels.com/photos/3762892/pexels-photo-3762892.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                src="https://static1.squarespace.com/static/5c4f037236099b8a1c70e3bd/5c5058f0b8a045c91dc0cc65/5e73a73b4201be4501226750/1584904237026/Screenshot+2020-03-22+at+16.08.22.png?format=1500w" 
                 alt="Skincare Products" 
                 className="w-full h-auto rounded-2xl shadow-soft"
               />
