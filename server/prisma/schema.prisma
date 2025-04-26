@@ -21,6 +21,8 @@ model User {
   routines          UserRoutine[]
   feedback          UserFeedback[]
   responses         UserResponse[]
+  productFeedback   ProductFeedback[]
+  routineFeedback   RoutineFeedback[]
 }
 
 model SkinProfile {
@@ -41,9 +43,10 @@ model Product {
   id              Int            @id @default(autoincrement())
   name            String
   brand           String
-  description     String?
+  description     String
+  imageUrl        String?
   categoryId      Int?
-  category        Category?      @relation(fields: [categoryId], references: [id])
+  category        Category?       @relation(fields: [categoryId], references: [id])
   isNatural       Boolean?
   isGentle        Boolean?
   price           Float?
@@ -53,9 +56,13 @@ model Product {
   targetConcerns  String[]
   keyIngredients  String[]
   ingredients     String[]
+  isDay           Boolean?
+  isNight         Boolean?
   createdAt       DateTime       @default(now())
   routineSteps    RoutineStep[]
   feedback        UserFeedback[]
+  productFeedback ProductFeedback[]
+  routineFeedback RoutineFeedback[]
 }
 
 model Category {
@@ -75,6 +82,7 @@ model UserRoutine {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   steps       RoutineStep[]
+  routineFeedback RoutineFeedback[]
 }
 
 model RoutineStep {
@@ -138,4 +146,40 @@ enum QuestionCategory {
   CONCERNS
   LIFESTYLE
   PREFERENCES
+  FEEDBACK
+}
+
+model ProductFeedback {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id])
+  usage       String   // As recommended, Less often, Stopped
+  discomfort  Boolean
+  discomfortImproving Boolean?
+  positiveChanges Boolean?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, productId])
+}
+
+model RoutineFeedback {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  routineId   Int
+  routine     UserRoutine @relation(fields: [routineId], references: [id])
+  satisfaction String  // Very satisfied, Satisfied, Neutral, Unsatisfied, Very unsatisfied
+  skinChanges  Boolean
+  easeOfUse    String  // Yes, Somewhat, No
+  unnecessaryProductId Int?
+  unnecessaryProduct   Product? @relation(fields: [unnecessaryProductId], references: [id])
+  primaryConcern      String
+  routinePreference   String  // Keep same, Make adjustments, Start new
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, routineId])
 }
