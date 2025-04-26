@@ -9,6 +9,7 @@ import progressRoutes from './routes/progressRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import { scheduleRoutineReminders } from './utils/notifications.js';
 import { requestLogger, queryLogger } from './utils/logger.js';
+import feedbackRoutes from './routes/feedbackRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -38,6 +39,7 @@ app.use('/api/questionnaire', questionnaireRoutes);
 app.use('/api/routines', routineRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
