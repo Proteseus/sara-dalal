@@ -20,7 +20,7 @@ export const getQuestions = async (req, res) => {
 
 export const submitResponses = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const userId = req.user.id;
     const { responses } = req.body;
 
     // Validate responses

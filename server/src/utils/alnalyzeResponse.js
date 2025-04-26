@@ -124,7 +124,7 @@ export const analyzeResponses = async (userId, responses) => {
   
     // Get product recommendations from database based on skin type and concerns
     if (skinProfile.skinType) {
-      const recommendedProducts = await prisma.product.findMany({
+      let recommendedProducts = await prisma.product.findMany({
         where: {
           AND: [
             {
