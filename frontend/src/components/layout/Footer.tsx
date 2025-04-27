@@ -44,11 +44,6 @@ const Footer: React.FC = () => {
                   Progress Tracking
                 </Link>
               </li>
-              <li>
-                <Link to="/products/recommended" className="text-gray-600 hover:text-primary transition-colors">
-                  Product Recommendations
-                </Link>
-              </li>
             </ul>
           </div>
           <div>
