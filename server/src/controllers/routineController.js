@@ -201,9 +201,12 @@ export const deleteRoutine = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 
+    const i = parseInt(id);
+
+
     // Verify routine ownership
     const routine = await prisma.userRoutine.findFirst({
-      where: { id, userId }
+      where: { id: i, userId }
     });
 
     if (!routine) {
@@ -213,8 +216,8 @@ export const deleteRoutine = async (req, res) => {
       });
     }
 
-    await prisma.routine.delete({
-      where: { id }
+    await prisma.userRoutine.delete({
+      where: { id: i }
     });
 
     res.status(200).json({
@@ -240,9 +243,11 @@ export const toggleRoutineStatus = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 
+    const i = parseInt(id);
+
     // Verify routine ownership
     const routine = await prisma.userRoutine.findFirst({
-      where: { id, userId }
+      where: { id: i, userId }
     });
 
     if (!routine) {
@@ -253,7 +258,7 @@ export const toggleRoutineStatus = async (req, res) => {
     }
 
     const updatedRoutine = await prisma.userRoutine.update({
-      where: { id },
+      where: { id: i },
       data: {
         isActive: !routine.isActive
       }
