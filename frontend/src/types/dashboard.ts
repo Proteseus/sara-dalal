@@ -3,7 +3,8 @@ import { ProgressReport, ProgressSummary } from './progress';
 
 export interface DashboardUser {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   skinProfile: SkinProfile;
   createdAt: string;
