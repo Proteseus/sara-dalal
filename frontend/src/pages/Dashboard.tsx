@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-serif text-3xl font-semibold text-gray-800">
-              Welcome back, {data.user.name.split(' ')[0]}!
+              Welcome back, {data.user.firstName}!
             </h1>
             <p className="text-gray-600 mt-1">
               Here's an overview of your skincare journey

@@ -26,7 +26,7 @@ export const getDashboardData = async (req, res) => {
     });
 
     // Get active routines
-    const routines = await prisma.routine.findMany({
+    const routines = await prisma.userRoutine.findMany({
       where: {
         userId,
         isActive: true
@@ -42,7 +42,7 @@ export const getDashboardData = async (req, res) => {
         }
       },
       orderBy: [
-        { isFavorite: 'desc' },
+        // { isFavorite: 'desc' },
         { updatedAt: 'desc' }
       ]
     });
@@ -143,7 +143,7 @@ export const getDashboardData = async (req, res) => {
     // Get recent product recommendations
     const recentRecommendations = await prisma.product.findMany({
       where: {
-        routines: {
+        routineSteps: {
           some: {
             routine: {
               userId
