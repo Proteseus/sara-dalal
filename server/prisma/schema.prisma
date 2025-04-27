@@ -63,6 +63,45 @@ model Product {
   feedback        UserFeedback[]
   productFeedback ProductFeedback[]
   routineFeedback RoutineFeedback[]
+  stepAlternatives StepAlternative[]
+  updatedAt       DateTime       @updatedAt
+}
+
+model RoutineStep {
+  id            Int         @id @default(autoincrement())
+  routineId     Int
+  routine       UserRoutine @relation(fields: [routineId], references: [id])
+  productId     Int
+  product       Product     @relation(fields: [productId], references: [id])
+  order         Int
+  time          String?
+  categoryName  String?
+  notes         String?
+  alternatives  StepAlternative[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model StepAlternative {
+  id              Int         @id @default(autoincrement())
+  stepId          Int
+  step            RoutineStep @relation(fields: [stepId], references: [id])
+  productId       Int
+  product         Product     @relation(fields: [productId], references: [id])
+  name            String
+  brand           String
+  description     String
+  price           Float
+  size            Float
+  unit            String
+  keyIngredients  String[]
+  isNatural       Boolean
+  isGentle        Boolean
+  score           Float?
+  scoreBreakdown  Json?
+  userRating      Float?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model Category {
@@ -85,18 +124,6 @@ model UserRoutine {
   routineFeedback RoutineFeedback[]
 }
 
-model RoutineStep {
-  id          Int         @id @default(autoincrement())
-  routineId   Int
-  routine     UserRoutine @relation(fields: [routineId], references: [id])
-  productId   Int
-  product     Product     @relation(fields: [productId], references: [id])
-  order       Int
-  time        String?
-  notes       String?
-  createdAt   DateTime    @default(now())
-}
-
 model UserFeedback {
   id        Int      @id @default(autoincrement())
   userId    Int
@@ -104,8 +131,10 @@ model UserFeedback {
   productId Int
   product   Product  @relation(fields: [productId], references: [id])
   rating    Int      @db.SmallInt
-  comment   String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
 }
 
 model Question {

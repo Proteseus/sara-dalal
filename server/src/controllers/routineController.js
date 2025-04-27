@@ -13,7 +13,7 @@ export const createRoutine = async (req, res) => {
     const { name, steps, isActive = true } = req.body;
     const userId = req.user.id;
 
-    const routine = await prisma.routine.create({
+    const routine = await prisma.userRoutine.create({
       data: {
         name,
         isActive,
@@ -58,7 +58,7 @@ export const getUserRoutines = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const routines = await prisma.routine.findMany({
+    const routines = await prisma.userRoutine.findMany({
       where: { userId },
       include: {
         steps: {
@@ -86,6 +86,50 @@ export const getUserRoutines = async (req, res) => {
 };
 
 /**
+ * Get a routine for a user
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const getUserRoutine = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const i = parseInt(id);
+
+    const routine = await prisma.userRoutine.findUnique({
+      where: { id: i, userId },
+      include: {
+        steps: {
+          include: {
+            product: {
+              include: {
+                category: true
+              }
+            },
+            alternatives: true
+          },
+          orderBy: {
+            order: 'asc'
+          }
+        }
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: routine
+    });
+  } catch (error) {
+    console.error('Error fetching routine:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch routine'
+    });
+  }
+};
+
+/**
  * Update a routine
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
@@ -96,9 +140,11 @@ export const updateRoutine = async (req, res) => {
     const { name, steps, isActive } = req.body;
     const userId = req.user.id;
 
+    const i = parseInt(id);
+
     // Verify routine ownership
-    const existingRoutine = await prisma.routine.findFirst({
-      where: { id, userId }
+    const existingRoutine = await prisma.userRoutine.findFirst({
+      where: { id: i, userId }
     });
 
     if (!existingRoutine) {
@@ -108,8 +154,8 @@ export const updateRoutine = async (req, res) => {
       });
     }
 
-    const routine = await prisma.routine.update({
-      where: { id },
+    const routine = await prisma.userRoutine.update({
+      where: { id: i },
       data: {
         name,
         isActive,
@@ -156,7 +202,7 @@ export const deleteRoutine = async (req, res) => {
     const userId = req.user.id;
 
     // Verify routine ownership
-    const routine = await prisma.routine.findFirst({
+    const routine = await prisma.userRoutine.findFirst({
       where: { id, userId }
     });
 
@@ -195,7 +241,7 @@ export const toggleRoutineStatus = async (req, res) => {
     const userId = req.user.id;
 
     // Verify routine ownership
-    const routine = await prisma.routine.findFirst({
+    const routine = await prisma.userRoutine.findFirst({
       where: { id, userId }
     });
 
@@ -206,7 +252,7 @@ export const toggleRoutineStatus = async (req, res) => {
       });
     }
 
-    const updatedRoutine = await prisma.routine.update({
+    const updatedRoutine = await prisma.userRoutine.update({
       where: { id },
       data: {
         isActive: !routine.isActive

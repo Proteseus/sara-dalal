@@ -2,6 +2,7 @@ import express from 'express';
 import {
   createRoutine,
   getUserRoutines,
+  getUserRoutine,
   updateRoutine,
   deleteRoutine,
   toggleRoutineStatus
@@ -18,6 +19,9 @@ router.post('/', createRoutine);
 
 // Get all routines for the authenticated user
 router.get('/', getUserRoutines);
+
+// Get a routine for the authenticated user
+router.get('/:id', getUserRoutine);
 
 // Update a routine
 router.put('/:id', updateRoutine);
