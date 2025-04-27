@@ -7,6 +7,7 @@ import questionnaireRoutes from './routes/questionnaireRoutes.js';
 import routineRoutes from './routes/routineRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 import { scheduleRoutineReminders } from './utils/notifications.js';
 import { requestLogger, queryLogger } from './utils/logger.js';
 import feedbackRoutes from './routes/feedbackRoutes.js';
@@ -45,7 +46,7 @@ app.use('/api/routines', routineRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/feedback', feedbackRoutes);
-
+app.use('/api/products', productRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
