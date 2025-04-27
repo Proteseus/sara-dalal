@@ -203,7 +203,6 @@ export const deleteRoutine = async (req, res) => {
 
     const i = parseInt(id);
 
-
     // Verify routine ownership
     const routine = await prisma.userRoutine.findFirst({
       where: { id: i, userId }
@@ -216,6 +215,12 @@ export const deleteRoutine = async (req, res) => {
       });
     }
 
+    // First delete all steps associated with the routine
+    await prisma.routineStep.deleteMany({
+      where: { routineId: i }
+    });
+
+    // Then delete the routine
     await prisma.userRoutine.delete({
       where: { id: i }
     });

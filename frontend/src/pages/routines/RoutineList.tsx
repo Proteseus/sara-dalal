@@ -6,6 +6,7 @@ import { getUserRoutines, toggleRoutineStatus, deleteRoutine } from '../../api/r
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
+import Modal from '../../components/ui/Modal';
 import { Routine } from '../../types/skincare';
 
 const RoutineList: React.FC = () => {
@@ -14,6 +15,8 @@ const RoutineList: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [routineToDelete, setRoutineToDelete] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchRoutines();
@@ -41,16 +44,16 @@ const RoutineList: React.FC = () => {
     }
   };
 
-  const handleDeleteRoutine = async (routineId: string) => {
-    if (!window.confirm('Are you sure you want to delete this routine?')) {
-      return;
-    }
-
+  const handleDeleteRoutine = async (routineId: number) => {
+    setIsDeleting(true);
     try {
-      await deleteRoutine(routineId, authState.user!.token);
+      await deleteRoutine(routineId.toString(), authState.user!.token);
       setRoutines(routines.filter(routine => routine.id !== routineId));
+      setRoutineToDelete(null);
     } catch (err) {
       setError('Failed to delete routine');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -85,22 +88,33 @@ const RoutineList: React.FC = () => {
           </div>
         )}
 
+        <Modal
+          isOpen={routineToDelete !== null}
+          onClose={() => setRoutineToDelete(null)}
+          title="Delete Routine"
+          confirmText="Delete"
+          onConfirm={() => handleDeleteRoutine(routineToDelete!)}
+          isConfirming={isDeleting}
+        >
+          Are you sure you want to delete this routine? This action cannot be undone.
+        </Modal>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {routines.map((routine) => (
             <Card key={routine.id} className="relative">
               <div className="absolute top-4 right-4">
                 <div className="relative">
                   <button
-                    onClick={() => setActiveMenu(activeMenu === routine.id ? null : routine.id)}
+                    onClick={() => setActiveMenu(activeMenu === routine.id.toString() ? null : routine.id.toString())}
                     className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                   >
                     <MoreVertical size={20} className="text-gray-500" />
                   </button>
                   
-                  {activeMenu === routine.id && (
+                  {activeMenu === routine.id.toString() && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-soft py-2 z-10">
                       <button
-                        onClick={() => handleToggleStatus(routine.id)}
+                        onClick={() => handleToggleStatus(routine.id.toString())}
                         className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
                       >
                         <Power size={16} className="mr-2" />
@@ -114,7 +128,7 @@ const RoutineList: React.FC = () => {
                         Edit
                       </Link>
                       <button
-                        onClick={() => handleDeleteRoutine(routine.id)}
+                        onClick={() => setRoutineToDelete(routine.id)}
                         className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center"
                       >
                         <Trash2 size={16} className="mr-2" />
