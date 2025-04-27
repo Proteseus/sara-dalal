@@ -5,6 +5,7 @@ import { Loader2, Sun, Moon, GripVertical, Plus, Trash2, Save, ChevronDown, Mess
 import { useAuth } from '../../context/AuthContext';
 import { getRoutineById, updateRoutine, updateStepDefaultProduct } from '../../api/routines';
 import { submitRoutineFeedback } from '../../api/feedback';
+import { rateProduct } from '../../api/products';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
@@ -113,18 +114,10 @@ const RoutineDetails: React.FC = () => {
   };
 
   const handleRating = async (productId: number, rating: number) => {
+    if (!authState.user) return;
     try {
-      const response = await fetch('/api/products/rate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productId: productId.toString(), rating }),
-      });
-
-      if (response.ok) {
-        setRatings(prev => ({ ...prev, [productId]: rating }));
-      }
+      await rateProduct(productId, rating, authState.user.token);
+      setRatings(prev => ({ ...prev, [productId]: rating }));
     } catch (error) {
       console.error('Error rating product:', error);
     }

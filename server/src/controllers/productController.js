@@ -7,6 +7,8 @@ export const rateProduct = async (req, res) => {
     const { productId, rating } = req.body;
     const userId = req.user.id;
 
+    const i = parseInt(productId);
+
     // Validate rating
     if (rating < 1 || rating > 5) {
       return res.status(400).json({ error: 'Rating must be between 1 and 5' });
@@ -17,7 +19,7 @@ export const rateProduct = async (req, res) => {
       where: {
         userId_productId: {
           userId,
-          productId
+          productId: i
         }
       },
       update: {
@@ -25,7 +27,7 @@ export const rateProduct = async (req, res) => {
       },
       create: {
         userId,
-        productId,
+        productId: i,
         rating
       }
     });
