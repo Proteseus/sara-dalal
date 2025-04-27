@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2, Sun, Moon, GripVertical, Plus, Trash2, Save, ChevronDown, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { getRoutineById, updateRoutine } from '../../api/routines';
+import { getRoutineById, updateRoutine, updateStepDefaultProduct } from '../../api/routines';
 import { submitRoutineFeedback } from '../../api/feedback';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
@@ -149,6 +149,21 @@ const RoutineDetails: React.FC = () => {
       setShowFeedbackForm(false);
     } catch (err) {
       setError('Failed to submit feedback');
+    }
+  };
+
+  const handleDefaultProductChange = async (stepId: number, productId: number) => {
+    if (!authState.user) return;
+    
+    try {
+      const updatedStep = await updateStepDefaultProduct(stepId, productId, authState.user.token);
+      setSteps(prevSteps => 
+        prevSteps.map(step => 
+          step.id === stepId ? updatedStep : step
+        )
+      );
+    } catch (err) {
+      setError('Failed to update default product');
     }
   };
 
@@ -371,6 +386,26 @@ const RoutineDetails: React.FC = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {step.alternatives.length > 0 && (
+                  <div className="mt-2">
+                    <label className="text-sm font-medium text-gray-700">Default Product:</label>
+                    <select
+                      className="w-full px-4 py-3 pr-10 bg-white border-2 rounded-xl text-base text-gray-700 font-medium appearance-none cursor-pointer transition-colors duration-200 border-gray-200 hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      value={step.defaultProductId || step.productId}
+                      onChange={(e) => handleDefaultProductChange(step.id, parseInt(e.target.value))}
+                    >
+                      <option value={step.productId}>
+                        {step.product.name} ({step.product.brand})
+                      </option>
+                      {step.alternatives.map(alt => (
+                        <option key={alt.id} value={alt.productId}>
+                          {alt.name} ({alt.brand})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )}
               </motion.div>

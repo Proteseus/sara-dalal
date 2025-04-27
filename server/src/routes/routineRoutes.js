@@ -5,7 +5,8 @@ import {
   getUserRoutine,
   updateRoutine,
   deleteRoutine,
-  toggleRoutineStatus
+  toggleRoutineStatus,
+  pickDefaultProduct
 } from '../controllers/routineController.js';
 import { authenticateToken } from '../middleware/auth.js';
 
@@ -31,5 +32,8 @@ router.delete('/:id', deleteRoutine);
 
 // Toggle routine active status
 router.patch('/:id/toggle', toggleRoutineStatus);
+
+// Pick default product for a step
+router.put('/:stepId/default-product', pickDefaultProduct);
 
 export default router; 

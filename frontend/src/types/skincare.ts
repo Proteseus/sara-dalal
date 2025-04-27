@@ -34,6 +34,8 @@ export interface RoutineStep {
   routineId: number;
   productId: number;
   product: Product;
+  defaultProductId?: number;
+  defaultProduct?: Product;
   order: number;
   time?: string;
   categoryName?: string;

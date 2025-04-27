@@ -276,3 +276,59 @@ export const toggleRoutineStatus = async (req, res) => {
     });
   }
 }; 
+
+
+/**
+ * Pick default product for a step
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const pickDefaultProduct = async (req, res) => {
+  try {
+    const { stepId } = req.params;
+    const { defaultProductId } = req.body;
+    const userId = req.user.id;
+
+    // Verify the step belongs to a routine owned by the user
+    const step = await prisma.routineStep.findFirst({
+      where: {
+        id: parseInt(stepId),
+        routine: {
+          userId: userId
+        }
+      },
+      include: {
+        alternatives: true
+      }
+    });
+
+    if (!step) {
+      return res.status(404).json({ error: 'Step not found' });
+    }
+
+    // Verify the default product is either the main product or one of the alternatives
+    const validProductIds = [step.productId, ...step.alternatives.map(a => a.productId)];
+    if (!validProductIds.includes(defaultProductId)) {
+      return res.status(400).json({ error: 'Invalid default product' });
+    }
+
+    const updatedStep = await prisma.routineStep.update({
+      where: { id: parseInt(stepId) },
+      data: { defaultProductId },
+      include: {
+        product: true,
+        defaultProduct: true,
+        alternatives: {
+          include: {
+            product: true
+          }
+        }
+      }
+    });
+
+    res.json(updatedStep);
+  } catch (error) {
+    console.error('Error updating default product:', error);
+    res.status(500).json({ error: 'Failed to update default product' });
+  }
+};

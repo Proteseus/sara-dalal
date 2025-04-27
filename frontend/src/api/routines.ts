@@ -1,4 +1,4 @@
-import { Routine } from '../types/skincare';
+import { Routine, RoutineStep } from '../types/skincare';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -149,4 +149,21 @@ export const toggleRoutineStatus = async (id: string, token: string): Promise<Ro
     }
     throw new Error('Failed to toggle routine status');
   }
+};
+
+export const updateStepDefaultProduct = async (stepId: number, defaultProductId: number, token: string): Promise<RoutineStep> => {
+  const response = await fetch(`${API_URL}/routines/steps/${stepId}/default-product`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ defaultProductId })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update default product');
+  }
+
+  return response.json();
 };
