@@ -127,7 +127,7 @@ const RoutineList: React.FC = () => {
 
               <Link to={`/routines/${routine.id}`} className="block">
                 <div className="mb-4">
-                  {routine.steps[0]?.time.toLowerCase().includes('morning') ? (
+                  {routine?.steps[0]?.time.toLowerCase().includes('morning') ? (
                     <Sun size={24} className="text-yellow-500" />
                   ) : (
                     <Moon size={24} className="text-indigo-500" />

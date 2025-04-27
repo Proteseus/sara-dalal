@@ -149,7 +149,7 @@ const Initial: React.FC = () => {
     setIsSubmitting(true);
     try {
       const result = await submitResponses(responses, authState.user!.token);
-      navigate('/dashboard', { state: { skinProfile: result.skinProfile } });
+      navigate(`/routines/${result.skinProfile.routine.id}`, { state: { skinProfile: result.skinProfile } });
     } catch (err) {
       setError('Failed to submit responses. Please try again.');
       setIsSubmitting(false);

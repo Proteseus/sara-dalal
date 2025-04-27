@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Loader2, Sun, Moon, GripVertical, Plus, Trash2, Save, ChevronDown } from 'lucide-react';
+import { Loader2, Sun, Moon, GripVertical, Plus, Trash2, Save, ChevronDown, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { getRoutineById, updateRoutine } from '../../api/routines';
+import { submitRoutineFeedback } from '../../api/feedback';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
-import { Routine, RoutineStep, StepAlternative } from '../../types/skincare';
+import RoutineFeedbackForm from '../../components/feedback/RoutineFeedbackForm';
+import { Routine, RoutineStep, StepAlternative, RoutineFeedback } from '../../types/skincare';
 import { StarIcon } from '@heroicons/react/24/solid';
 
 const RoutineDetails: React.FC = () => {
@@ -24,6 +26,7 @@ const RoutineDetails: React.FC = () => {
   const [draggedStep, setDraggedStep] = useState<number | null>(null);
   const [expandedAlternatives, setExpandedAlternatives] = useState<Record<number, boolean>>({});
   const [ratings, setRatings] = useState<Record<number, number>>({});
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
 
   useEffect(() => {
     fetchRoutine();
@@ -75,7 +78,7 @@ const RoutineDetails: React.FC = () => {
     setIsSaving(true);
     try {
       const updatedRoutine = await updateRoutine(
-        routine.id,
+        routine.id.toString(),
         {
           ...routine,
           name: editedName,
@@ -127,6 +130,28 @@ const RoutineDetails: React.FC = () => {
     }
   };
 
+  const handleFeedbackSubmit = async (feedback: {
+    satisfaction: 'Very satisfied' | 'Satisfied' | 'Neutral' | 'Unsatisfied' | 'Very unsatisfied';
+    skinChanges: boolean;
+    easeOfUse: 'Yes' | 'Somewhat' | 'No';
+    unnecessaryProductId?: number;
+    primaryConcern: string;
+    routinePreference: 'Keep the same routine' | 'Make small adjustments' | 'Start a new routine';
+  }) => {
+    if (!routine || !authState.user) return;
+
+    try {
+      const feedbackData: Omit<RoutineFeedback, 'id' | 'userId' | 'createdAt' | 'updatedAt'> = {
+        routineId: routine.id,
+        ...feedback
+      };
+      await submitRoutineFeedback(feedbackData, authState.user.token);
+      setShowFeedbackForm(false);
+    } catch (err) {
+      setError('Failed to submit feedback');
+    }
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -159,7 +184,7 @@ const RoutineDetails: React.FC = () => {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
-            {routine.steps[0]?.time.toLowerCase().includes('morning') ? (
+            {routine.steps.length > 0 && routine.steps[0].time && routine.steps[0].time.toLowerCase().includes('morning') ? (
               <Sun size={32} className="text-yellow-500 mr-4" />
             ) : (
               <Moon size={32} className="text-indigo-500 mr-4" />
@@ -171,6 +196,14 @@ const RoutineDetails: React.FC = () => {
             />
           </div>
           <div className="flex gap-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowFeedbackForm(true)}
+              className="flex items-center gap-2"
+            >
+              <MessageSquare size={20} />
+              Give Feedback
+            </Button>
             <Button
               variant="outline"
               onClick={() => navigate('/routines')}
@@ -190,6 +223,16 @@ const RoutineDetails: React.FC = () => {
         {error && (
           <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-xl">
             {error}
+          </div>
+        )}
+
+        {showFeedbackForm && (
+          <div className="mb-6">
+            <RoutineFeedbackForm
+              routine={routine}
+              onSubmit={handleFeedbackSubmit}
+              onCancel={() => setShowFeedbackForm(false)}
+            />
           </div>
         )}
 

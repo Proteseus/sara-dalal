@@ -78,7 +78,7 @@ export const createRoutine = async (routineData: Partial<Routine>, token: string
   }
 };
 
-export const updateRoutine = async (id: string, routineData: Partial<Routine>, token: string): Promise<Routine> => {
+export const updateRoutine = async (id: string | number, routineData: Partial<Routine>, token: string): Promise<Routine> => {
   try {
     const response = await fetch(`${API_URL}/routines/${id}`, {
       method: 'PUT',

@@ -31,7 +31,7 @@ export const submitProductFeedback = async (
 };
 
 export const submitRoutineFeedback = async (
-  feedback: Omit<RoutineFeedback, 'id' | 'userId' | 'createdAt' | 'updatedAt'>,
+  feedback: Omit<RoutineFeedback, 'id' | 'userId' | 'createdAt' | 'updatedAt'> & { routineId: number },
   token: string
 ): Promise<RoutineFeedback> => {
   try {

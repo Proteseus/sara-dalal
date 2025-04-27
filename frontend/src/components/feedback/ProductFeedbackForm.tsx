@@ -1,163 +1,124 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { submitProductFeedback } from '../../api/feedback';
+import { Product } from '../../types/skincare';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
-import { Product } from '../../types/skincare';
+import RadioGroup from '../ui/RadioGroup';
 
 interface ProductFeedbackFormProps {
   product: Product;
-  onSuccess?: () => void;
+  onSubmit: (feedback: {
+    usage: 'As recommended' | 'Less often than recommended' | 'I stopped using it';
+    discomfort: boolean;
+    discomfortImproving?: boolean;
+    positiveChanges?: boolean;
+  }) => void;
+  onCancel: () => void;
 }
 
-const ProductFeedbackForm: React.FC<ProductFeedbackFormProps> = ({ product, onSuccess }) => {
-  const { authState } = useAuth();
+const ProductFeedbackForm: React.FC<ProductFeedbackFormProps> = ({
+  product,
+  onSubmit,
+  onCancel,
+}) => {
   const [usage, setUsage] = useState<'As recommended' | 'Less often than recommended' | 'I stopped using it'>('As recommended');
   const [discomfort, setDiscomfort] = useState(false);
   const [discomfortImproving, setDiscomfortImproving] = useState<boolean | undefined>(undefined);
   const [positiveChanges, setPositiveChanges] = useState<boolean | undefined>(undefined);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!authState.isAuthenticated || !authState.user) {
-      setError('Please log in to submit feedback');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      await submitProductFeedback({
-        productId: product.id,
-        usage,
-        discomfort,
-        discomfortImproving: discomfort ? discomfortImproving : undefined,
-        positiveChanges
-      }, authState.user.token);
-
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to submit feedback');
-    } finally {
-      setIsSubmitting(false);
-    }
+    onSubmit({
+      usage,
+      discomfort,
+      discomfortImproving: discomfort ? discomfortImproving : undefined,
+      positiveChanges,
+    });
   };
 
   return (
-    <Card className="p-6">
-      <h3 className="text-lg font-medium mb-4">Product Feedback</h3>
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <Card className="p-8 bg-background border border-primary/10">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+          <span className="text-primary text-xl font-serif">{product.name.charAt(0)}</span>
+        </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <h3 className="text-xl font-serif font-semibold text-gray-800">
+            Feedback for {product.name}
+          </h3>
+          <p className="text-sm text-gray-500">{product.brand}</p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="space-y-4">
+          <label className="block text-base font-medium text-gray-700">
             How often did you use this product as part of your routine?
           </label>
-          <select
+          <RadioGroup
+            options={[
+              'As recommended',
+              'Less often than recommended',
+              'I stopped using it',
+            ]}
             value={usage}
-            onChange={(e) => setUsage(e.target.value as typeof usage)}
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="As recommended">As recommended</option>
-            <option value="Less often than recommended">Less often than recommended</option>
-            <option value="I stopped using it">I stopped using it</option>
-          </select>
+            onChange={(value) => setUsage(value as typeof usage)}
+            className="bg-white rounded-xl p-4 space-y-3"
+          />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="space-y-4">
+          <label className="block text-base font-medium text-gray-700">
             Did you experience any discomfort while using this product?
           </label>
-          <div className="flex gap-4">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                checked={!discomfort}
-                onChange={() => setDiscomfort(false)}
-                className="mr-2"
-              />
-              No
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                checked={discomfort}
-                onChange={() => setDiscomfort(true)}
-                className="mr-2"
-              />
-              Yes
-            </label>
-          </div>
+          <RadioGroup
+            options={['No', 'Yes']}
+            value={discomfort ? 'Yes' : 'No'}
+            onChange={(value) => setDiscomfort(value === 'Yes')}
+            className="bg-white rounded-xl p-4 space-y-3"
+          />
         </div>
 
         {discomfort && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="space-y-4">
+            <label className="block text-base font-medium text-gray-700">
               Do you believe the discomfort is improving or can be tolerated?
             </label>
-            <div className="flex gap-4">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  checked={discomfortImproving === true}
-                  onChange={() => setDiscomfortImproving(true)}
-                  className="mr-2"
-                />
-                Yes
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  checked={discomfortImproving === false}
-                  onChange={() => setDiscomfortImproving(false)}
-                  className="mr-2"
-                />
-                No
-              </label>
-            </div>
+            <RadioGroup
+              options={['No', 'Yes']}
+              value={discomfortImproving ? 'Yes' : 'No'}
+              onChange={(value) => setDiscomfortImproving(value === 'Yes')}
+              className="bg-white rounded-xl p-4 space-y-3"
+            />
           </div>
         )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="space-y-4">
+          <label className="block text-base font-medium text-gray-700">
             Did you notice any positive changes in your skin from this product?
           </label>
-          <div className="flex gap-4">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                checked={positiveChanges === true}
-                onChange={() => setPositiveChanges(true)}
-                className="mr-2"
-              />
-              Yes
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                checked={positiveChanges === false}
-                onChange={() => setPositiveChanges(false)}
-                className="mr-2"
-              />
-              I'm not sure
-            </label>
-          </div>
+          <RadioGroup
+            options={['Yes', 'I\'m not sure']}
+            value={positiveChanges ? 'Yes' : 'I\'m not sure'}
+            onChange={(value) => setPositiveChanges(value === 'Yes')}
+            className="bg-white rounded-xl p-4 space-y-3"
+          />
         </div>
 
-        {error && (
-          <div className="text-red-600 text-sm">{error}</div>
-        )}
-
-        <Button
-          type="submit"
-          disabled={isSubmitting || (discomfort && discomfortImproving === undefined) || positiveChanges === undefined}
-          isLoading={isSubmitting}
-        >
-          Submit Feedback
-        </Button>
+        <div className="flex justify-end gap-4 pt-4 border-t border-gray-100">
+          <Button 
+            variant="outline" 
+            onClick={onCancel}
+            className="border-primary/20 hover:bg-primary/5"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit"
+            className="bg-primary hover:bg-primary-dark"
+          >
+            Submit Feedback
+          </Button>
+        </div>
       </form>
     </Card>
   );
