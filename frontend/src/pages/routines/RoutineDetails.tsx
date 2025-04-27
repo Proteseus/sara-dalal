@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Loader2, Sun, Moon, GripVertical, Plus, Trash2, Save } from 'lucide-react';
+import { Loader2, Sun, Moon, GripVertical, Plus, Trash2, Save, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { getRoutineById, updateRoutine } from '../../api/routines';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
-import { Routine, RoutineStep } from '../../types/skincare';
+import { Routine, RoutineStep, StepAlternative } from '../../types/skincare';
+import { StarIcon } from '@heroicons/react/24/solid';
 
 const RoutineDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +22,8 @@ const RoutineDetails: React.FC = () => {
   const [editedName, setEditedName] = useState('');
   const [steps, setSteps] = useState<RoutineStep[]>([]);
   const [draggedStep, setDraggedStep] = useState<number | null>(null);
+  const [expandedAlternatives, setExpandedAlternatives] = useState<Record<number, boolean>>({});
+  const [ratings, setRatings] = useState<Record<number, number>>({});
 
   useEffect(() => {
     fetchRoutine();
@@ -90,13 +93,38 @@ const RoutineDetails: React.FC = () => {
     }
   };
 
-  const handleDeleteStep = (stepId: string) => {
+  const handleDeleteStep = (stepId: number) => {
     const newSteps = steps.filter(step => step.id !== stepId);
     // Update order numbers
     newSteps.forEach((step, idx) => {
       step.order = idx + 1;
     });
     setSteps(newSteps);
+  };
+
+  const toggleAlternatives = (stepId: number) => {
+    setExpandedAlternatives(prev => ({
+      ...prev,
+      [stepId]: !prev[stepId]
+    }));
+  };
+
+  const handleRating = async (productId: number, rating: number) => {
+    try {
+      const response = await fetch('/api/products/rate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: productId.toString(), rating }),
+      });
+
+      if (response.ok) {
+        setRatings(prev => ({ ...prev, [productId]: rating }));
+      }
+    } catch (error) {
+      console.error('Error rating product:', error);
+    }
   };
 
   if (isLoading) {
@@ -175,46 +203,135 @@ const RoutineDetails: React.FC = () => {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`flex items-center p-4 rounded-xl border ${
+                className={`flex flex-col p-4 rounded-xl border ${
                   draggedStep === index
                     ? 'border-primary bg-primary/5'
                     : 'border-gray-200'
                 }`}
               >
-                <div className="cursor-move p-2">
-                  <GripVertical size={20} className="text-gray-400" />
-                </div>
-                <div className="flex-grow ml-4">
-                  <div className="flex items-center mb-2">
-                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm mr-3">
-                      {step.order}
-                    </span>
-                    <h3 className="font-medium text-gray-800">
-                      {step.product.name}
-                    </h3>
+                <div className="flex items-center">
+                  <div className="cursor-move p-2">
+                    <GripVertical size={20} className="text-gray-400" />
                   </div>
-                  <p className="text-sm text-gray-600 ml-9">
-                    {step.notes}
-                  </p>
+                  <div className="flex-grow ml-4">
+                    <div className="flex items-center mb-2">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm mr-3">
+                        {step.order}
+                      </span>
+                      <h3 className="font-medium text-gray-800">
+                        {step.product.name}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-gray-600 ml-9">
+                      {step.notes}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <h4 className="font-semibold text-sm text-gray-500">
+                        {step.categoryName}
+                      </h4>
+                      {step.alternatives && step.alternatives.length > 0 && (
+                        <button
+                          onClick={() => toggleAlternatives(step.id)}
+                          className="ml-2 flex items-center text-sm text-primary hover:text-primary-dark"
+                        >
+                          Show Alternatives
+                          <ChevronDown
+                            size={16}
+                            className={`ml-1 transition-transform ${
+                              expandedAlternatives[step.id] ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteStep(step.id)}
+                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={20} />
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleDeleteStep(step.id)}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                >
-                  <Trash2 size={20} />
-                </button>
+
+                {/* Primary Product Details */}
+                <div className="ml-9 mt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <p className="font-medium text-gray-800">{step.product.name}</p>
+                      <p className="text-sm text-gray-500">{step.product.brand}</p>
+                    </div>
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <StarIcon
+                          key={star}
+                          className={`w-5 h-5 ${
+                            star <= (ratings[step.product.id] || 0)
+                              ? 'text-yellow-400'
+                              : 'text-gray-300'
+                          }`}
+                          onClick={() => handleRating(step.product.id, star)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2">{step.product.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {step.product.keyIngredients.map((ingredient: string) => (
+                      <span
+                        key={ingredient}
+                        className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+                      >
+                        {ingredient}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Alternatives */}
+                {expandedAlternatives[step.id] && step.alternatives && (
+                  <div className="mt-4 ml-9 space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Alternative Products:</h5>
+                    {step.alternatives.map((alternative: StepAlternative) => (
+                      <div
+                        key={alternative.id}
+                        className="p-3 rounded-lg bg-gray-50 border border-gray-200"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <p className="font-medium text-gray-800">{alternative.name}</p>
+                            <p className="text-sm text-gray-500">{alternative.brand}</p>
+                          </div>
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <StarIcon
+                                key={star}
+                                className={`w-5 h-5 ${
+                                  star <= (ratings[alternative.productId] || 0)
+                                    ? 'text-yellow-400'
+                                    : 'text-gray-300'
+                                }`}
+                                onClick={() => handleRating(alternative.productId, star)}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{alternative.description}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {alternative.keyIngredients.map((ingredient: string) => (
+                            <span
+                              key={ingredient}
+                              className="bg-secondary/10 text-secondary px-2 py-1 rounded-full text-xs"
+                            >
+                              {ingredient}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             ))}
-
-            <Button
-              variant="outline"
-              fullWidth
-              className="mt-4"
-              onClick={() => {/* Add new step logic */}}
-            >
-              <Plus size={20} className="mr-2" />
-              Add Step
-            </Button>
           </div>
         </Card>
       </div>

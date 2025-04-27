@@ -6,12 +6,15 @@ import { getUserProfile, UserProfile } from '../api/profile';
 import Layout from '../components/layout/Layout';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import { StarIcon } from '@heroicons/react/24/solid';
+import { RoutineStep, StepAlternative } from '../types/skincare';
 
 const Profile: React.FC = () => {
   const { authState } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [ratings, setRatings] = useState<Record<number, number>>({});
 
   useEffect(() => {
     fetchProfile();
@@ -25,6 +28,26 @@ const Profile: React.FC = () => {
     } catch (err) {
       setError('Failed to load profile');
       setIsLoading(false);
+    }
+  };
+
+  const handleRating = async (productId: number, rating: number) => {
+    try {
+      const response = await fetch('/api/products/rate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, rating }),
+      });
+
+      if (response.ok) {
+        setRatings(prev => ({ ...prev, [productId]: rating }));
+        // Refresh profile to get updated recommendations
+        fetchProfile();
+      }
+    } catch (error) {
+      console.error('Error rating product:', error);
     }
   };
 
@@ -211,50 +234,329 @@ const Profile: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-
-                <div>
-                  <h3 className="font-medium text-gray-700 mb-2">Recommended Products</h3>
-                  <div className="space-y-4">
-                    {profile.skinProfile.recommendations.products.map((product) => (
-                      <div
-                        key={product.id}
-                        className="p-4 rounded-xl border border-gray-200 hover:border-primary transition-colors"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h4 className="font-medium text-gray-800">{product.name}</h4>
-                            <p className="text-sm text-gray-500">{product.brand}</p>
-                          </div>
-                          <div className="bg-primary/10 text-primary px-2 py-1 rounded text-sm">
-                            {product.score ? `${Math.round(product.score * 100)}% Match` : 'No match score'}
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">{product.description}</p>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          {product.keyIngredients.map((ingredient) => (
-                            <span
-                              key={ingredient}
-                              className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs"
-                            >
-                              {ingredient}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-primary font-medium">
-                            ${product.price}
-                          </span>
-                          <Button variant="outline" size="sm">
-                            Learn More
-                            <ChevronRight size={16} className="ml-1" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             </Card>
+
+            {/* Generated Routine */}
+            {profile.routines && profile.routines.length > 0 && (
+              <Card className="mt-8">
+                <h2 className="text-xl font-medium text-gray-800 mb-6">Your Personalized Routine</h2>
+                
+                <div className="space-y-8">
+                  {/* Morning Routine */}
+                  {profile.routines[0].steps?.filter((step: RoutineStep) => step.time === 'Morning').length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-700 mb-4">Morning Routine</h3>
+                      <div className="space-y-4">
+                        {profile.routines[0].steps
+                          .filter((step: RoutineStep) => step.time === 'Morning')
+                          .sort((a: RoutineStep, b: RoutineStep) => a.order - b.order)
+                          .map((step: RoutineStep) => (
+                            <div key={step.id} className="bg-gray-50 p-4 rounded-lg">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-medium text-gray-800">{step.categoryName}</h4>
+                                <span className="text-sm text-gray-500">Step {step.order}</span>
+                              </div>
+                              
+                              {/* Primary Product */}
+                              <div className="mb-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div>
+                                    <p className="font-medium text-gray-800">{step.product.name}</p>
+                                    <p className="text-sm text-gray-500">{step.product.brand}</p>
+                                  </div>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <StarIcon
+                                        key={star}
+                                        className={`w-5 h-5 ${
+                                          star <= (ratings[step.product.id] || 0)
+                                            ? 'text-yellow-400'
+                                            : 'text-gray-300'
+                                        }`}
+                                        onClick={() => handleRating(step.product.id, star)}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <p className="text-sm text-gray-600 mb-2">{step.product.description}</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {step.product.keyIngredients.map((ingredient: string) => (
+                                    <span
+                                      key={ingredient}
+                                      className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+                                    >
+                                      {ingredient}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Alternatives */}
+                              {step.alternatives && step.alternatives.length > 0 && (
+                                <div className="border-t border-gray-200 pt-4">
+                                  <h5 className="text-sm font-medium text-gray-700 mb-3">Alternative Products</h5>
+                                  <div className="space-y-3">
+                                    {step.alternatives.map((alt: StepAlternative) => (
+                                      <div key={alt.id} className="bg-white p-3 rounded-lg border border-gray-200">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <div>
+                                            <p className="font-medium text-gray-800">{alt.name}</p>
+                                            <p className="text-sm text-gray-500">{alt.brand}</p>
+                                          </div>
+                                          <div className="flex">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                              <StarIcon
+                                                key={star}
+                                                className={`w-5 h-5 ${
+                                                  star <= (ratings[alt.product.id] || 0)
+                                                    ? 'text-yellow-400'
+                                                    : 'text-gray-300'
+                                                }`}
+                                                onClick={() => handleRating(alt.product.id, star)}
+                                              />
+                                            ))}
+                                          </div>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-2">{alt.description}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                          {alt.keyIngredients.map((ingredient: string) => (
+                                            <span
+                                              key={ingredient}
+                                              className="bg-secondary/10 text-secondary px-2 py-1 rounded-full text-xs"
+                                            >
+                                              {ingredient}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Step Notes */}
+                              {step.notes && (
+                                <div className="mt-4 text-sm text-gray-600 bg-white p-3 rounded-lg border border-gray-200">
+                                  {step.notes}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Evening Routine */}
+                  {profile.routines[0].steps?.filter((step: RoutineStep) => step.time === 'Evening').length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-700 mb-4">Evening Routine</h3>
+                      <div className="space-y-4">
+                        {profile.routines[0].steps
+                          .filter((step: RoutineStep) => step.time === 'Evening')
+                          .sort((a: RoutineStep, b: RoutineStep) => a.order - b.order)
+                          .map((step: RoutineStep) => (
+                            <div key={step.id} className="bg-gray-50 p-4 rounded-lg">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-medium text-gray-800">{step.categoryName}</h4>
+                                <span className="text-sm text-gray-500">Step {step.order}</span>
+                              </div>
+                              
+                              {/* Primary Product */}
+                              <div className="mb-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div>
+                                    <p className="font-medium text-gray-800">{step.product.name}</p>
+                                    <p className="text-sm text-gray-500">{step.product.brand}</p>
+                                  </div>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <StarIcon
+                                        key={star}
+                                        className={`w-5 h-5 ${
+                                          star <= (ratings[step.product.id] || 0)
+                                            ? 'text-yellow-400'
+                                            : 'text-gray-300'
+                                        }`}
+                                        onClick={() => handleRating(step.product.id, star)}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <p className="text-sm text-gray-600 mb-2">{step.product.description}</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {step.product.keyIngredients.map((ingredient: string) => (
+                                    <span
+                                      key={ingredient}
+                                      className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+                                    >
+                                      {ingredient}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Alternatives */}
+                              {step.alternatives && step.alternatives.length > 0 && (
+                                <div className="border-t border-gray-200 pt-4">
+                                  <h5 className="text-sm font-medium text-gray-700 mb-3">Alternative Products</h5>
+                                  <div className="space-y-3">
+                                    {step.alternatives.map((alt: StepAlternative) => (
+                                      <div key={alt.id} className="bg-white p-3 rounded-lg border border-gray-200">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <div>
+                                            <p className="font-medium text-gray-800">{alt.name}</p>
+                                            <p className="text-sm text-gray-500">{alt.brand}</p>
+                                          </div>
+                                          <div className="flex">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                              <StarIcon
+                                                key={star}
+                                                className={`w-5 h-5 ${
+                                                  star <= (ratings[alt.product.id] || 0)
+                                                    ? 'text-yellow-400'
+                                                    : 'text-gray-300'
+                                                }`}
+                                                onClick={() => handleRating(alt.product.id, star)}
+                                              />
+                                            ))}
+                                          </div>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-2">{alt.description}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                          {alt.keyIngredients.map((ingredient: string) => (
+                                            <span
+                                              key={ingredient}
+                                              className="bg-secondary/10 text-secondary px-2 py-1 rounded-full text-xs"
+                                            >
+                                              {ingredient}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Step Notes */}
+                              {step.notes && (
+                                <div className="mt-4 text-sm text-gray-600 bg-white p-3 rounded-lg border border-gray-200">
+                                  {step.notes}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Anytime Routine */}
+                  {profile.routines[0].steps?.filter((step: RoutineStep) => step.time === 'Anytime').length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-700 mb-4">Anytime Products</h3>
+                      <div className="space-y-4">
+                        {profile.routines[0].steps
+                          .filter((step: RoutineStep) => step.time === 'Anytime')
+                          .sort((a: RoutineStep, b: RoutineStep) => a.order - b.order)
+                          .map((step: RoutineStep) => (
+                            <div key={step.id} className="bg-gray-50 p-4 rounded-lg">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-medium text-gray-800">{step.categoryName}</h4>
+                                <span className="text-sm text-gray-500">Step {step.order}</span>
+                              </div>
+                              
+                              {/* Primary Product */}
+                              <div className="mb-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div>
+                                    <p className="font-medium text-gray-800">{step.product.name}</p>
+                                    <p className="text-sm text-gray-500">{step.product.brand}</p>
+                                  </div>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <StarIcon
+                                        key={star}
+                                        className={`w-5 h-5 ${
+                                          star <= (ratings[step.product.id] || 0)
+                                            ? 'text-yellow-400'
+                                            : 'text-gray-300'
+                                        }`}
+                                        onClick={() => handleRating(step.product.id, star)}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <p className="text-sm text-gray-600 mb-2">{step.product.description}</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {step.product.keyIngredients.map((ingredient: string) => (
+                                    <span
+                                      key={ingredient}
+                                      className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+                                    >
+                                      {ingredient}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Alternatives */}
+                              {step.alternatives && step.alternatives.length > 0 && (
+                                <div className="border-t border-gray-200 pt-4">
+                                  <h5 className="text-sm font-medium text-gray-700 mb-3">Alternative Products</h5>
+                                  <div className="space-y-3">
+                                    {step.alternatives.map((alt: StepAlternative) => (
+                                      <div key={alt.id} className="bg-white p-3 rounded-lg border border-gray-200">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <div>
+                                            <p className="font-medium text-gray-800">{alt.name}</p>
+                                            <p className="text-sm text-gray-500">{alt.brand}</p>
+                                          </div>
+                                          <div className="flex">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                              <StarIcon
+                                                key={star}
+                                                className={`w-5 h-5 ${
+                                                  star <= (ratings[alt.product.id] || 0)
+                                                    ? 'text-yellow-400'
+                                                    : 'text-gray-300'
+                                                }`}
+                                                onClick={() => handleRating(alt.product.id, star)}
+                                              />
+                                            ))}
+                                          </div>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-2">{alt.description}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                          {alt.keyIngredients.map((ingredient: string) => (
+                                            <span
+                                              key={ingredient}
+                                              className="bg-secondary/10 text-secondary px-2 py-1 rounded-full text-xs"
+                                            >
+                                              {ingredient}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Step Notes */}
+                              {step.notes && (
+                                <div className="mt-4 text-sm text-gray-600 bg-white p-3 rounded-lg border border-gray-200">
+                                  {step.notes}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       </div>

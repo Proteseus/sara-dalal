@@ -1,39 +1,56 @@
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   brand: string;
   description: string;
-  price: number;
-  size: number;
-  unit: string;
+  imageUrl?: string;
+  categoryId?: number;
+  category?: Category;
+  isNatural?: boolean;
+  isGentle?: boolean;
+  price?: number;
+  size?: number;
+  unit?: string;
+  skinType: string[];
+  targetConcerns: string[];
   keyIngredients: string[];
-  isNatural: boolean;
-  isGentle: boolean;
-  score?: number;
-  scoreBreakdown?: {
-    skinTypeMatch: number;
-    concernMatch: number;
-    lifestyleCompatibility: number;
-    environmentalAdaptation: number;
-    userPreferences: number;
-    routineCompatibility: number;
-    priceMatch: number;
-  };
+  ingredients: string[];
+  isDay?: boolean;
+  isNight?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface RoutineStep {
-  id: string;
-  order: number;
-  time: string;
-  notes: string;
+  id: number;
+  routineId: number;
+  productId: number;
   product: Product;
+  order: number;
+  time?: string;
+  categoryName?: string;
+  notes?: string;
+  alternatives: StepAlternative[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface Routine {
-  id: string;
+export interface UserRoutine {
+  id: number;
+  userId: number;
   name: string;
   isActive: boolean;
   steps: RoutineStep[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface LifestyleFactors {
@@ -46,17 +63,72 @@ export interface LifestyleFactors {
   airConditioning: string;
 }
 
+export interface StepAlternative {
+  id: number;
+  stepId: number;
+  productId: number;
+  product: Product;
+  name: string;
+  brand: string;
+  description: string;
+  price: number;
+  size: number;
+  unit: string;
+  keyIngredients: string[];
+  isNatural: boolean;
+  isGentle: boolean;
+  score?: number;
+  scoreBreakdown?: Record<string, number>;
+  userRating?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ProductCategory {
+  category: Category;
+  alternatives: ProductAlternative[];
+}
+
 export interface SkinProfile {
+  id: number;
+  userId: number;
   skinType: string;
   concerns: string[];
   allergies: string[];
   currentRoutine: string;
-  lifestyleFactors: LifestyleFactors;
+  lifestyleFactors: {
+    hydration: string;
+    sleep: string;
+    sunExposure: string;
+    stress: string;
+    diet: string;
+    environment: string;
+    airConditioning: string;
+  };
   recommendations: {
     immediate: string[];
     lifestyle: string[];
-    products: Product[];
+    products: {
+      category: Category;
+      alternatives: {
+        id: number;
+        name: string;
+        brand: string;
+        description: string;
+        price: number;
+        size: number;
+        unit: string;
+        keyIngredients: string[];
+        isNatural: boolean;
+        isGentle: boolean;
+        score: number;
+        scoreBreakdown: Record<string, number>;
+        userRating: number;
+      }[];
+    }[];
   };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface QuestionnaireQuestion {
@@ -106,4 +178,25 @@ export interface RoutineFeedback {
   routinePreference: 'Keep the same routine' | 'Make small adjustments' | 'Start a new routine';
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Routine {
+  id: number;
+  userId: number;
+  name: string;
+  isActive: boolean;
+  steps: RoutineStep[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserProfile {
+  id: number;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  skinProfile: SkinProfile;
+  routines: UserRoutine[];
+  createdAt: Date;
+  updatedAt: Date;
 }
