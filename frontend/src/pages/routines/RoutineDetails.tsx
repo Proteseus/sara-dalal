@@ -196,25 +196,25 @@ const RoutineDetails: React.FC = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center">
+      <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8 max-w-4xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+          <div className="flex items-center w-full sm:w-auto">
             {routine.steps.length > 0 && routine.steps[0].time && routine.steps[0].time.toLowerCase().includes('morning') ? (
-              <Sun size={32} className="text-yellow-500 mr-4" />
+              <Sun size={28} className="text-yellow-500 mr-3 sm:mr-4" />
             ) : (
-              <Moon size={32} className="text-indigo-500 mr-4" />
+              <Moon size={28} className="text-indigo-500 mr-3 sm:mr-4" />
             )}
             <Input
               value={editedName}
               onChange={(e) => setEditedName(e.target.value)}
-              className="text-2xl font-serif font-semibold !py-1 !px-2 min-w-[300px]"
+              className="text-xl sm:text-2xl font-serif font-semibold !py-1 !px-2 min-w-0 flex-1"
             />
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
             <Button
               variant="outline"
               onClick={() => setShowFeedbackForm(true)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full sm:w-auto"
             >
               <MessageSquare size={20} />
               Give Feedback
@@ -222,12 +222,14 @@ const RoutineDetails: React.FC = () => {
             <Button
               variant="outline"
               onClick={() => navigate('/routines')}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
             <Button
               onClick={handleSave}
               isLoading={isSaving}
+              className="w-full sm:w-auto"
             >
               <Save size={20} className="mr-2" />
               Save Changes
@@ -261,40 +263,40 @@ const RoutineDetails: React.FC = () => {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`flex flex-col p-4 rounded-xl border ${
+                className={`flex flex-col p-3 sm:p-4 rounded-xl border ${
                   draggedStep === index
                     ? 'border-primary bg-primary/5'
                     : 'border-gray-200'
                 }`}
               >
-                <div className="flex items-center">
-                  <div className="cursor-move p-2">
-                    <GripVertical size={20} className="text-gray-400" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center">
+                  <div className="cursor-move p-1 sm:p-2">
+                    <GripVertical size={18} className="text-gray-400" />
                   </div>
-                  <div className="flex-grow ml-4">
-                    <div className="flex items-center mb-2">
-                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm mr-3">
+                  <div className="flex-grow ml-0 sm:ml-4 w-full">
+                    <div className="flex items-center mb-1 sm:mb-2">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm mr-2 sm:mr-3">
                         {step.order}
                       </span>
-                      <h3 className="font-medium text-gray-800">
+                      <h3 className="font-medium text-gray-800 text-base sm:text-lg">
                         {step.product.name}
                       </h3>
                     </div>
-                    <p className="text-sm text-gray-600 ml-9">
+                    <p className="text-xs sm:text-sm text-gray-600 ml-8 sm:ml-9">
                       {step.notes}
                     </p>
-                    <div className="flex items-center mt-2">
-                      <h4 className="font-semibold text-sm text-gray-500">
+                    <div className="flex items-center mt-1 sm:mt-2">
+                      <h4 className="font-semibold text-xs sm:text-sm text-gray-500">
                         {step.categoryName}
                       </h4>
                       {step.alternatives && step.alternatives.length > 0 && (
                         <button
                           onClick={() => toggleAlternatives(step.id)}
-                          className="ml-2 flex items-center text-sm text-primary hover:text-primary-dark"
+                          className="ml-2 flex items-center text-xs sm:text-sm text-primary hover:text-primary-dark"
                         >
                           Show Alternatives
                           <ChevronDown
-                            size={16}
+                            size={14}
                             className={`ml-1 transition-transform ${
                               expandedAlternatives[step.id] ? 'rotate-180' : ''
                             }`}
@@ -305,24 +307,24 @@ const RoutineDetails: React.FC = () => {
                   </div>
                   <button
                     onClick={() => handleDeleteStep(step.id)}
-                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    className="p-1 sm:p-2 text-gray-400 hover:text-red-500 transition-colors self-end sm:self-auto"
                   >
-                    <Trash2 size={20} />
+                    <Trash2 size={18} />
                   </button>
                 </div>
 
                 {/* Primary Product Details */}
-                <div className="ml-9 mt-4">
-                  <div className="flex items-center justify-between mb-2">
+                <div className="ml-8 sm:ml-9 mt-3 sm:mt-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-1 sm:mb-2 gap-2">
                     <div>
-                      <p className="font-medium text-gray-800">{step.product.name}</p>
-                      <p className="text-sm text-gray-500">{step.product.brand}</p>
+                      <p className="font-medium text-gray-800 text-sm sm:text-base">{step.product.name}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">{step.product.brand}</p>
                     </div>
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <StarIcon
                           key={star}
-                          className={`w-5 h-5 ${
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${
                             star <= (ratings[step.product.id] || 0)
                               ? 'text-yellow-400'
                               : 'text-gray-300'
@@ -332,12 +334,12 @@ const RoutineDetails: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600 mb-2">{step.product.description}</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">{step.product.description}</p>
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {step.product.keyIngredients.map((ingredient: string) => (
                       <span
                         key={ingredient}
-                        className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+                        className="bg-primary/10 text-primary px-2 py-1 rounded-full text-[10px] sm:text-xs"
                       >
                         {ingredient}
                       </span>
@@ -347,23 +349,23 @@ const RoutineDetails: React.FC = () => {
 
                 {/* Alternatives */}
                 {expandedAlternatives[step.id] && step.alternatives && (
-                  <div className="mt-4 ml-9 space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Alternative Products:</h5>
+                  <div className="mt-3 sm:mt-4 ml-8 sm:ml-9 space-y-2 sm:space-y-3">
+                    <h5 className="text-xs sm:text-sm font-medium text-gray-700">Alternative Products:</h5>
                     {step.alternatives.map((alternative: StepAlternative) => (
                       <div
                         key={alternative.id}
-                        className="p-3 rounded-lg bg-gray-50 border border-gray-200"
+                        className="p-2 sm:p-3 rounded-lg bg-gray-50 border border-gray-200"
                       >
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-1 sm:mb-2 gap-2">
                           <div>
-                            <p className="font-medium text-gray-800">{alternative.name}</p>
-                            <p className="text-sm text-gray-500">{alternative.brand}</p>
+                            <p className="font-medium text-gray-800 text-sm">{alternative.name}</p>
+                            <p className="text-xs text-gray-500">{alternative.brand}</p>
                           </div>
                           <div className="flex">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <StarIcon
                                 key={star}
-                                className={`w-5 h-5 ${
+                                className={`w-4 h-4 sm:w-5 sm:h-5 ${
                                   star <= (ratings[alternative.productId] || 0)
                                     ? 'text-yellow-400'
                                     : 'text-gray-300'
@@ -373,12 +375,12 @@ const RoutineDetails: React.FC = () => {
                             ))}
                           </div>
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{alternative.description}</p>
-                        <div className="flex flex-wrap gap-2">
+                        <p className="text-xs text-gray-600 mb-1">{alternative.description}</p>
+                        <div className="flex flex-wrap gap-1">
                           {alternative.keyIngredients.map((ingredient: string) => (
                             <span
                               key={ingredient}
-                              className="bg-secondary/10 text-secondary px-2 py-1 rounded-full text-xs"
+                              className="bg-secondary/10 text-secondary px-2 py-1 rounded-full text-[10px]"
                             >
                               {ingredient}
                             </span>
@@ -391,9 +393,9 @@ const RoutineDetails: React.FC = () => {
 
                 {step.alternatives.length > 0 && (
                   <div className="mt-2">
-                    <label className="text-sm font-medium text-gray-700">Default Product:</label>
+                    <label className="text-xs sm:text-sm font-medium text-gray-700">Default Product:</label>
                     <select
-                      className="w-full px-4 py-3 pr-10 bg-white border-2 rounded-xl text-base text-gray-700 font-medium appearance-none cursor-pointer transition-colors duration-200 border-gray-200 hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-10 bg-white border-2 rounded-xl text-sm sm:text-base text-gray-700 font-medium appearance-none cursor-pointer transition-colors duration-200 border-gray-200 hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/20"
                       value={step.defaultProductId || step.productId}
                       onChange={(e) => handleDefaultProductChange(step.id, parseInt(e.target.value))}
                     >

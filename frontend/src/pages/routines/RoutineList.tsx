@@ -74,12 +74,12 @@ const RoutineList: React.FC = () => {
           <h1 className="font-serif text-3xl font-semibold text-gray-800">
             Your Skincare Routines
           </h1>
-          <Link to="/routines/create">
+          {/* <Link to="/routines/create">
             <Button>
               <Plus size={20} className="mr-2" />
               Create Routine
             </Button>
-          </Link>
+          </Link> */}
         </div>
 
         {error && (

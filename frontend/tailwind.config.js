@@ -26,7 +26,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
+        sans: ['Karla', 'sans-serif'],
         serif: ['Playfair Display', 'serif'],
       },
       boxShadow: {
