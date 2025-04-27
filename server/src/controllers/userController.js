@@ -98,7 +98,15 @@ export const getUserProfile = async (req, res) => {
       where: { id: userId },
       include: {
         skinProfile: true,
-        routines: true,
+        routines: {
+          include: {
+            steps: {
+              include: {
+                product: true
+              }
+            }
+          }
+        },
       },
     });
 
