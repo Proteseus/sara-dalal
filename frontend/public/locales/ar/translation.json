@@ -108,18 +108,19 @@
     "newRecommendations": "التوصيات الجديدة"
   },
   "routines": {
-    "title": "روتين العناية بالبشرة",
-    "createRoutine": "إنشاء روتين جديد",
-    "noRoutines": {
-      "title": "لا توجد روتينات حتى الآن",
-      "description": "قم بإنشاء أول روتين للعناية ببشرتك للبدء"
-    },
+    "title": "روتينات العناية ببشرتك",
+    "noRoutines": "لا توجد روتينات بعد",
+    "createRoutine": "قم بإنشاء أول ملف للبشرة عن طريق إجراء الاختبار للبدء",
+    "createButton": "إنشاء روتين",
+    "steps": "خطوات",
     "active": "نشط",
     "inactive": "غير نشط",
-    "steps": "خطوات",
     "moreSteps": "+{{count}} خطوات إضافية",
-    "deleteConfirm": "هل أنت متأكد من حذف هذا الروتين؟ لا يمكن التراجع عن هذا الإجراء.",
-    "deleteTitle": "حذف الروتين",
+    "deleteRoutine": {
+      "title": "حذف الروتين",
+      "confirm": "حذف",
+      "message": "هل أنت متأكد من رغبتك في حذف هذا الروتين؟ لا يمكن التراجع عن هذا الإجراء."
+    },
     "routineDetails": {
       "title": "تفاصيل الروتين",
       "basicInfo": "المعلومات الأساسية",
@@ -297,6 +298,61 @@
         "title": "6. معلومات الاتصال",
         "description": "إذا كان لديك أي أسئلة حول شروط الخدمة هذه، يرجى الاتصال بنا على support@dalal.com."
       }
+    }
+  },
+  "dashboard": {
+    "title": "مرحباً بعودتك، {{name}}!",
+    "subtitle": "هذه نظرة عامة على رحلة العناية ببشرتك",
+    "updateAssessment": "تحديث التقييم",
+    "quickStats": {
+      "activeRoutines": "الروتينات النشطة",
+      "upcomingSteps": "الخطوات القادمة",
+      "recentUpdates": "التحديثات الأخيرة",
+      "newRecommendations": "التوصيات الجديدة"
+    },
+    "recentRecommendations": {
+      "title": "التوصيات الأخيرة",
+      "viewAll": "عرض الكل"
+    }
+  },
+  "questionnaire": {
+    "initial": {
+      "title": "تقييم البشرة",
+      "subtitle": "دعنا نفهم بشرتك بشكل أفضل لإنشاء روتينك المثالي",
+      "nextQuestion": "السؤال التالي",
+      "previous": "السابق",
+      "complete": "إكمال التقييم",
+      "validation": {
+        "ageRequired": "الرجاء إدخال عمرك",
+        "ageInvalid": "الرجاء إدخال عمر صحيح",
+        "ageRange": "يجب أن يكون العمر بين 0 و 120"
+      }
+    },
+    "feedback": {
+      "title": "تحديث ملف بشرتك",
+      "subtitle": "دعنا نقوم بتحديث ملف بشرتك لتتبع تقدمك",
+      "nextQuestion": "السؤال التالي",
+      "previous": "السابق",
+      "update": "تحديث الملف",
+      "validation": {
+        "ageRequired": "الرجاء إدخال عمرك",
+        "ageInvalid": "الرجاء إدخال عمر صحيح",
+        "ageRange": "يجب أن يكون العمر بين 0 و 120"
+      }
+    }
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "routines": "الروتينات",
+    "assessment": "التقييم",
+    "progress": "التقدم",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج",
+    "login": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "menu": {
+      "open": "فتح القائمة الرئيسية",
+      "close": "إغلاق القائمة الرئيسية"
     }
   }
 }

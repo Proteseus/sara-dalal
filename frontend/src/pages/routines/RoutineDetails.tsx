@@ -13,11 +13,13 @@ import Input from '../../components/ui/Input';
 import RoutineFeedbackForm from '../../components/feedback/RoutineFeedbackForm';
 import { Routine, RoutineStep, StepAlternative, RoutineFeedback } from '../../types/skincare';
 import { StarIcon } from '@heroicons/react/24/solid';
+import { useTranslation } from 'react-i18next';
 
 const RoutineDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { authState } = useAuth();
+  const { t } = useTranslation();
   const [routine, setRoutine] = useState<Routine | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -176,10 +178,10 @@ const RoutineDetails: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-medium text-gray-800 mb-4">
-              Routine not found
+              {t('routines.routineDetails.notFound')}
             </h1>
             <Button onClick={() => navigate('/routines')}>
-              Back to Routines
+              {t('common.cancel')}
             </Button>
           </div>
         </div>
@@ -201,6 +203,7 @@ const RoutineDetails: React.FC = () => {
               value={editedName}
               onChange={(e) => setEditedName(e.target.value)}
               className="text-xl sm:text-2xl font-serif font-semibold !py-1 !px-2 min-w-0 flex-1"
+              placeholder={t('routines.routineDetails.routineName')}
             />
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
@@ -210,14 +213,14 @@ const RoutineDetails: React.FC = () => {
               className="flex items-center gap-2 w-full sm:w-auto"
             >
               <MessageSquare size={20} />
-              Give Feedback
+              {t('routines.routineDetails.feedback.title')}
             </Button>
             <Button
               variant="outline"
               onClick={() => navigate('/routines')}
               className="w-full sm:w-auto"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleSave}
@@ -225,7 +228,7 @@ const RoutineDetails: React.FC = () => {
               className="w-full sm:w-auto"
             >
               <Save size={20} className="mr-2" />
-              Save Changes
+              {t('common.save')}
             </Button>
           </div>
         </div>
@@ -287,7 +290,7 @@ const RoutineDetails: React.FC = () => {
                           onClick={() => toggleAlternatives(step.id)}
                           className="ml-2 flex items-center text-xs sm:text-sm text-primary hover:text-primary-dark"
                         >
-                          Show Alternatives
+                          {t('routines.routineDetails.showAlternatives')}
                           <ChevronDown
                             size={14}
                             className={`ml-1 transition-transform ${
@@ -301,6 +304,7 @@ const RoutineDetails: React.FC = () => {
                   <button
                     onClick={() => handleDeleteStep(step.id)}
                     className="p-1 sm:p-2 text-gray-400 hover:text-red-500 transition-colors self-end sm:self-auto"
+                    title={t('common.delete')}
                   >
                     <Trash2 size={18} />
                   </button>
@@ -317,7 +321,7 @@ const RoutineDetails: React.FC = () => {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <StarIcon
                           key={star}
-                          className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                          className={`w-4 h-4 sm:w-5 sm:h-5 cursor-pointer ${
                             star <= (step.product?.feedback[0]?.rating || 0)
                               ? 'text-yellow-400'
                               : 'text-gray-300'
@@ -343,7 +347,9 @@ const RoutineDetails: React.FC = () => {
                 {/* Alternatives */}
                 {expandedAlternatives[step.id] && step.alternatives && (
                   <div className="mt-3 sm:mt-4 ml-8 sm:ml-9 space-y-2 sm:space-y-3">
-                    <h5 className="text-xs sm:text-sm font-medium text-gray-700">Alternative Products:</h5>
+                    <h5 className="text-xs sm:text-sm font-medium text-gray-700">
+                      {t('routines.routineDetails.alternatives')}:
+                    </h5>
                     {step.alternatives.map((alternative: StepAlternative) => (
                       <div
                         key={alternative.id}
@@ -358,7 +364,7 @@ const RoutineDetails: React.FC = () => {
                             {[1, 2, 3, 4, 5].map((star) => (
                               <StarIcon
                                 key={star}
-                                className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                                className={`w-4 h-4 sm:w-5 sm:h-5 cursor-pointer ${
                                   star <= (ratings[alternative.productId] || 0)
                                     ? 'text-yellow-400'
                                     : 'text-gray-300'
@@ -386,7 +392,9 @@ const RoutineDetails: React.FC = () => {
 
                 {step.alternatives.length > 0 && (
                   <div className="mt-2">
-                    <label className="text-xs sm:text-sm font-medium text-gray-700">Default Product:</label>
+                    <label className="text-xs sm:text-sm font-medium text-gray-700">
+                      {t('routines.routineDetails.defaultProduct')}:
+                    </label>
                     <select
                       className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-10 bg-white border-2 rounded-xl text-sm sm:text-base text-gray-700 font-medium appearance-none cursor-pointer transition-colors duration-200 border-gray-200 hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/20"
                       value={step.defaultProductId || step.productId}

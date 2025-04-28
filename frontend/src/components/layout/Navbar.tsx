@@ -10,6 +10,7 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { authState, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -35,16 +36,16 @@ const Navbar: React.FC = () => {
             {authState.isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
                 <Link to="/routines" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
-                  Routines
+                  {t('nav.routines')}
                 </Link>
                 <Link to="/questionnaire" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
-                  Assessment
+                  {t('nav.assessment')}
                 </Link>
                 <Link to="/progress" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
-                  Progress
+                  {t('nav.progress')}
                 </Link>
                 <div className="relative group ml-4">
                   <button className="flex items-center text-gray-600 hover:text-primary transition-colors">
@@ -53,14 +54,14 @@ const Navbar: React.FC = () => {
                   </button>
                   <div className="absolute right-0 w-48 py-2 mt-2 bg-white rounded-xl shadow-soft invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary-light hover:text-primary transition-colors">
-                      Profile
+                      {t('nav.profile')}
                     </Link>
                     <button 
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-secondary-light hover:text-primary transition-colors"
                     >
                       <LogOut size={16} className="mr-2" />
-                      Logout
+                      {t('nav.logout')}
                     </button>
                   </div>
                 </div>
@@ -68,10 +69,10 @@ const Navbar: React.FC = () => {
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="outline" size="sm">Login</Button>
+                  <Button variant="outline" size="sm">{t('nav.login')}</Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="sm">Sign Up</Button>
+                  <Button size="sm">{t('nav.signUp')}</Button>
                 </Link>
               </>
             )}
@@ -83,7 +84,9 @@ const Navbar: React.FC = () => {
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-primary hover:bg-secondary-light focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors"
             >
-              <span className="sr-only">{isMenuOpen ? 'Close main menu' : 'Open main menu'}</span>
+              <span className="sr-only">
+                {isMenuOpen ? t('nav.menu.close') : t('nav.menu.open')}
+              </span>
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
@@ -101,51 +104,51 @@ const Navbar: React.FC = () => {
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
                   onClick={closeMenu}
                 >
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
                 <Link
                   to="/routines"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
                   onClick={closeMenu}
                 >
-                  Routines
+                  {t('nav.routines')}
                 </Link>
                 <Link
                   to="/questionnaire"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
                   onClick={closeMenu}
                 >
-                  Assessment
+                  {t('nav.assessment')}
                 </Link>
                 <Link
                   to="/progress"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
                   onClick={closeMenu}
                 >
-                  Progress
+                  {t('nav.progress')}
                 </Link>
                 <Link
                   to="/profile"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
                   onClick={closeMenu}
                 >
-                  Profile
+                  {t('nav.profile')}
                 </Link>
                 <button
                   onClick={handleLogout}
                   className="flex items-center w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
                 >
                   <LogOut size={16} className="mr-2" />
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </>
             ) : (
               <div className="flex flex-col space-y-2 px-3 py-2">
                 <Link to="/login" onClick={closeMenu}>
-                  <Button variant="outline" fullWidth>Login</Button>
+                  <Button variant="outline" fullWidth>{t('nav.login')}</Button>
                 </Link>
                 <Link to="/register" onClick={closeMenu}>
-                  <Button fullWidth>Sign Up</Button>
+                  <Button fullWidth>{t('nav.signUp')}</Button>
                 </Link>
               </div>
             )}

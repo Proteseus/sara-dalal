@@ -8,6 +8,7 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Modal from '../../components/ui/Modal';
 import { Routine } from '../../types/skincare';
+import { useTranslation } from 'react-i18next';
 
 const RoutineList: React.FC = () => {
   const { authState } = useAuth();
@@ -17,6 +18,7 @@ const RoutineList: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [routineToDelete, setRoutineToDelete] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchRoutines();
@@ -72,7 +74,7 @@ const RoutineList: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="font-serif text-3xl font-semibold text-gray-800">
-            Your Skincare Routines
+            {t('routines.title')}
           </h1>
         </div>
 
@@ -85,12 +87,12 @@ const RoutineList: React.FC = () => {
         <Modal
           isOpen={routineToDelete !== null}
           onClose={() => setRoutineToDelete(null)}
-          title="Delete Routine"
-          confirmText="Delete"
+          title={t('routines.deleteRoutine.title')}
+          confirmText={t('routines.deleteRoutine.confirm')}
           onConfirm={() => handleDeleteRoutine(routineToDelete!)}
           isConfirming={isDeleting}
         >
-          Are you sure you want to delete this routine? This action cannot be undone.
+          {t('routines.deleteRoutine.message')}
         </Modal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -168,10 +170,10 @@ const RoutineList: React.FC = () => {
                       ? 'bg-green-100 text-green-800'
                       : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {routine.isActive ? 'Active' : 'Inactive'}
+                    {routine.isActive ? t('routines.active') : t('routines.inactive')}
                   </span>
                   <span className="text-gray-500">
-                    {routine.steps.length} steps
+                    {routine.steps.length} {t('routines.steps')}
                   </span>
                 </div>
               </Link>
@@ -182,15 +184,15 @@ const RoutineList: React.FC = () => {
         {routines.length === 0 && (
           <div className="text-center py-12">
             <h2 className="text-xl font-medium text-gray-800 mb-4">
-              No routines yet
+              {t('routines.noRoutines')}
             </h2>
             <p className="text-gray-600 mb-6">
-              Create your first skin profile by taking the quiz to get started
+              {t('routines.createRoutine')}
             </p>
             <Link to="/questionnaire">
               <Button>
                 <Plus size={20} className="mr-2" />
-                Create Routine
+                {t('routines.createButton')}
               </Button>
             </Link>
           </div>

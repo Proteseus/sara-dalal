@@ -8,12 +8,14 @@ import Layout from '../components/layout/Layout';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import { DashboardData } from '../types/dashboard';
+import { useTranslation } from 'react-i18next';
 
 const Dashboard: React.FC = () => {
   const { authState } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchDashboardData();
@@ -63,15 +65,15 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-serif text-3xl font-semibold text-gray-800">
-              Welcome back, {data.user.firstName}!
+              {t('dashboard.title', { name: data?.user.firstName })}
             </h1>
             <p className="text-gray-600 mt-1">
-              Here's an overview of your skincare journey
+              {t('dashboard.subtitle')}
             </p>
           </div>
           <Link to="/questionnaire">
             <Button>
-              Update Assessment
+              {t('dashboard.updateAssessment')}
             </Button>
           </Link>
         </div>
@@ -80,49 +82,49 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">Active Routines</h3>
+              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.quickStats.activeRoutines')}</h3>
               <span className="p-2 bg-primary/10 rounded-full">
                 <Calendar size={20} className="text-primary" />
               </span>
             </div>
             <p className="text-2xl font-semibold text-gray-800">
-              {data.routines.filter(r => r.isActive).length}
+              {data?.routines.filter(r => r.isActive).length}
             </p>
           </Card>
 
           <Card>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">Upcoming Steps</h3>
+              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.quickStats.upcomingSteps')}</h3>
               <span className="p-2 bg-primary/10 rounded-full">
                 <Clock size={20} className="text-primary" />
               </span>
             </div>
             <p className="text-2xl font-semibold text-gray-800">
-              {data.upcomingSteps.length}
+              {data?.upcomingSteps.length}
             </p>
           </Card>
 
           <Card>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">Recent Updates</h3>
+              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.quickStats.recentUpdates')}</h3>
               <span className="p-2 bg-primary/10 rounded-full">
                 <TrendingUp size={20} className="text-primary" />
               </span>
             </div>
             <p className="text-2xl font-semibold text-gray-800">
-              {data.recentResponses.length}
+              {data?.recentResponses.length}
             </p>
           </Card>
 
           <Card>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">New Recommendations</h3>
+              <h3 className="text-sm font-medium text-gray-600">{t('dashboard.quickStats.newRecommendations')}</h3>
               <span className="p-2 bg-primary/10 rounded-full">
                 <Star size={20} className="text-primary" />
               </span>
             </div>
             <p className="text-2xl font-semibold text-gray-800">
-              {data.recentRecommendations.length}
+              {data?.recentRecommendations.length}
             </p>
           </Card>
         </div>
@@ -130,10 +132,10 @@ const Dashboard: React.FC = () => {
         <div className="mt-8">
           <Card>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-medium text-gray-800">Recent Recommendations</h2>
+              <h2 className="text-xl font-medium text-gray-800">{t('dashboard.recentRecommendations.title')}</h2>
               <Link to="/routines">
                 <Button variant="outline" size="sm">
-                  View All
+                  {t('dashboard.recentRecommendations.viewAll')}
                 </Button>
               </Link>
             </div>

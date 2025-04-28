@@ -9,6 +9,7 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import { QuestionnaireQuestion, QuestionnaireResponse } from '../../types/skincare';
+import { useTranslation } from 'react-i18next';
 
 const Feedback: React.FC = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Feedback: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [numericalValue, setNumericalValue] = useState<string>('');
   const [numericalError, setNumericalError] = useState<string>('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -100,15 +102,15 @@ const Feedback: React.FC = () => {
   const handleNumericalSubmit = () => {
     const num = parseInt(numericalValue);
     if (isNaN(num)) {
-      setNumericalError('Please enter a valid number');
+      setNumericalError(t('questionnaire.feedback.validation.ageInvalid'));
       return;
     }
     if (num < 0) {
-      setNumericalError('Age cannot be negative');
+      setNumericalError(t('questionnaire.feedback.validation.ageRange'));
       return;
     }
     if (num > 120) {
-      setNumericalError('Please enter a valid age');
+      setNumericalError(t('questionnaire.feedback.validation.ageRange'));
       return;
     }
     
@@ -171,10 +173,10 @@ const Feedback: React.FC = () => {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="mb-8 text-center">
           <h1 className="font-serif text-3xl font-semibold text-gray-800 mb-4">
-            Update Your Skin Profile
+            {t('questionnaire.feedback.title')}
           </h1>
           <p className="text-gray-600">
-            Let's update your skin profile to track your progress
+            {t('questionnaire.feedback.subtitle')}
           </p>
         </div>
 
@@ -309,7 +311,7 @@ const Feedback: React.FC = () => {
             variant="outline"
           >
             <ChevronLeft size={20} className="mr-2" />
-            Previous
+            {t('questionnaire.feedback.previous')}
           </Button>
 
           {currentQuestionIndex === questions.length - 1 ? (
@@ -318,7 +320,7 @@ const Feedback: React.FC = () => {
               isLoading={isSubmitting}
               disabled={responses.length !== questions.length}
             >
-              Update Profile
+              {t('questionnaire.feedback.update')}
               <ChevronRight size={20} className="ml-2" />
             </Button>
           ) : (
@@ -326,7 +328,7 @@ const Feedback: React.FC = () => {
               onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
               disabled={!responses.find((r) => r.questionId === currentQuestion?.id)}
             >
-              Next Question
+              {t('questionnaire.feedback.nextQuestion')}
               <ChevronRight size={20} className="ml-2" />
             </Button>
           )}

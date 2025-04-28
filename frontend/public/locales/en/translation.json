@@ -109,7 +109,8 @@
   },
   "routines": {
     "title": "Your Skincare Routines",
-    "createRoutine": "Create Routine",
+    "createRoutine": "Create your first skin profile by taking the quiz to get started",
+    "createButton": "Create Routine",
     "noRoutines": {
       "title": "No routines yet",
       "description": "Create your first skincare routine to get started"
@@ -297,6 +298,61 @@
         "title": "6. Contact Information",
         "description": "If you have any questions about these Terms of Service, please contact us at support@dalal.com."
       }
+    }
+  },
+  "dashboard": {
+    "title": "Welcome back, {{name}}!",
+    "subtitle": "Here's an overview of your skincare journey",
+    "updateAssessment": "Update Assessment",
+    "quickStats": {
+      "activeRoutines": "Active Routines",
+      "upcomingSteps": "Upcoming Steps",
+      "recentUpdates": "Recent Updates",
+      "newRecommendations": "New Recommendations"
+    },
+    "recentRecommendations": {
+      "title": "Recent Recommendations",
+      "viewAll": "View All"
+    }
+  },
+  "questionnaire": {
+    "initial": {
+      "title": "Skin Assessment",
+      "subtitle": "Let's understand your skin better to create your perfect routine",
+      "nextQuestion": "Next Question",
+      "previous": "Previous",
+      "complete": "Complete Assessment",
+      "validation": {
+        "ageRequired": "Please enter your age",
+        "ageInvalid": "Please enter a valid age",
+        "ageRange": "Age must be between 0 and 120"
+      }
+    },
+    "feedback": {
+      "title": "Update Your Skin Profile",
+      "subtitle": "Let's update your skin profile to track your progress",
+      "nextQuestion": "Next Question",
+      "previous": "Previous",
+      "update": "Update Profile",
+      "validation": {
+        "ageRequired": "Please enter your age",
+        "ageInvalid": "Please enter a valid age",
+        "ageRange": "Age must be between 0 and 120"
+      }
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "routines": "Routines",
+    "assessment": "Assessment",
+    "progress": "Progress",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "signUp": "Sign Up",
+    "menu": {
+      "open": "Open main menu",
+      "close": "Close main menu"
     }
   }
 }
