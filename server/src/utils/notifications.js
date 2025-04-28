@@ -85,3 +85,32 @@ export const scheduleRoutineReminders = async () => {
     throw error;
   }
 }; 
+
+/**
+ * Send a routine reminder email
+ * @param {string} email - User's email address
+ * @param {string} username - User's name
+ * @param {Object} routine - Routine details
+ * @returns {Promise<Object>} - Email sending result
+ */
+export const sendGreetingEmail = async (email, username) => {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Welcome to our skincare journey!',
+      html: `
+        <h2>Hello ${username}!</h2>
+        <p>Welcome to our skincare journey!</p>
+        <p>We're excited to have you on board!</p>
+        </ul>
+        <p>Stay consistent for the best results!</p>
+      `
+    };
+
+    return await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending routine reminder:', error);
+    throw error;
+  }
+};

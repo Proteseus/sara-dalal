@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { sendGreetingEmail } from '../utils/notifications';
 
 const prisma = new PrismaClient();
 
@@ -37,6 +38,8 @@ export const registerUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
+    
+    await sendGreetingEmail(user.email, user.firstName);
 
     res.status(201).json({
       id: user.id,
