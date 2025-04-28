@@ -23,7 +23,12 @@ const Questionnaire: React.FC = () => {
 
       try {
         const profile = await getSkinProfile(authState.user!.token);
-        setHasProfile(!!profile);
+        console.log(profile);
+        if (profile && profile.error === 'Skin profile not found') {
+          setHasProfile(false);
+        } else {
+          setHasProfile(!!profile);
+        }
       } catch (err) {
         setError('Failed to check skin profile. Please try again.');
       } finally {

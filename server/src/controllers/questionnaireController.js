@@ -142,7 +142,7 @@ export const getSkinProfile = async (req, res) => {
     });
 
     if (!skinProfile) {
-      return res.status(404).json({ error: 'Skin profile not found' });
+      return res.status(200).json({ error: 'Skin profile not found' });
     }
 
     // Get user's responses for additional context

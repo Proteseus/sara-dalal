@@ -74,12 +74,6 @@ const RoutineList: React.FC = () => {
           <h1 className="font-serif text-3xl font-semibold text-gray-800">
             Your Skincare Routines
           </h1>
-          {/* <Link to="/routines/create">
-            <Button>
-              <Plus size={20} className="mr-2" />
-              Create Routine
-            </Button>
-          </Link> */}
         </div>
 
         {error && (
@@ -191,9 +185,9 @@ const RoutineList: React.FC = () => {
               No routines yet
             </h2>
             <p className="text-gray-600 mb-6">
-              Create your first skincare routine to get started
+              Create your first skin profile by taking the quiz to get started
             </p>
-            <Link to="/routines/create">
+            <Link to="/questionnaire">
               <Button>
                 <Plus size={20} className="mr-2" />
                 Create Routine

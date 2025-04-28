@@ -52,9 +52,6 @@ const Navbar: React.FC = () => {
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary-light hover:text-primary transition-colors">
                       Profile
                     </Link>
-                    <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-secondary-light hover:text-primary transition-colors">
-                      Settings
-                    </Link>
                     <button 
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-secondary-light hover:text-primary transition-colors"
@@ -130,13 +127,6 @@ const Navbar: React.FC = () => {
                   onClick={closeMenu}
                 >
                   Profile
-                </Link>
-                <Link
-                  to="/settings"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
-                  onClick={closeMenu}
-                >
-                  Settings
                 </Link>
                 <button
                   onClick={handleLogout}

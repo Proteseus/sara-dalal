@@ -94,22 +94,9 @@ const Profile: React.FC = () => {
               <p className="text-gray-600">{profile.email}</p>
             </div>
           </div>
-          <div className="flex gap-4">
-            <Link to="/settings">
-              <Button variant="outline">
-                <Settings size={20} className="mr-2" />
-                Settings
-              </Button>
-            </Link>
-            <Link to="/questionnaire/initial">
-              <Button>
-                <Edit size={20} className="mr-2" />
-                Update Profile
-              </Button>
-            </Link>
-          </div>
         </div>
 
+        {profile.skinProfile ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Skin Profile */}
           <div className="lg:col-span-2">
@@ -120,14 +107,14 @@ const Profile: React.FC = () => {
                 <div>
                   <h3 className="font-medium text-gray-700 mb-2">Skin Type</h3>
                   <p className="text-gray-800 bg-secondary-light/50 px-4 py-2 rounded-lg inline-block">
-                    {profile.skinProfile.skinType}
+                    {profile.skinProfile?.skinType}
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-medium text-gray-700 mb-2">Concerns</h3>
                   <div className="flex flex-wrap gap-2">
-                    {profile.skinProfile.concerns.map((concern) => (
+                    {profile.skinProfile?.concerns.map((concern) => (
                       <span
                         key={concern}
                         className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
@@ -141,7 +128,7 @@ const Profile: React.FC = () => {
                 <div>
                   <h3 className="font-medium text-gray-700 mb-2">Allergies</h3>
                   <div className="flex flex-wrap gap-2">
-                    {profile.skinProfile.allergies.map((allergy) => (
+                    {profile.skinProfile?.allergies.map((allergy) => (
                       <span
                         key={allergy}
                         className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm"
@@ -152,6 +139,7 @@ const Profile: React.FC = () => {
                   </div>
                 </div>
 
+                  
                 <div>
                   <h3 className="font-medium text-gray-700 mb-2">Current Routine</h3>
                   <p className="text-gray-600">{profile.skinProfile.currentRoutine}</p>
@@ -559,6 +547,13 @@ const Profile: React.FC = () => {
             )}
           </div>
         </div>
+        ) : (
+          <div className="text-center">
+            <h1 className="text-2xl font-sans text-gray-800 mb-4">
+              No skin profile found
+            </h1>
+          </div>
+        )}
       </div>
     </Layout>
   );
