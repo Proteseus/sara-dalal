@@ -159,6 +159,19 @@ export const updateRoutine = async (req, res) => {
       });
     }
 
+    // 1. Find all step IDs for this routine
+    const existingSteps = await prisma.routineStep.findMany({
+      where: { routineId: i },
+      select: { id: true }
+    });
+    const stepIds = existingSteps.map(step => step.id);
+
+    // 2. Delete all StepAlternative records for these steps
+    await prisma.stepAlternative.deleteMany({
+      where: { stepId: { in: stepIds } }
+    });
+
+    // 3. Now update the routine (delete steps, create new ones)
     const routine = await prisma.userRoutine.update({
       where: { id: i },
       data: {
