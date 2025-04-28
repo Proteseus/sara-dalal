@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "settings": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "rememberMe": "تذكرني",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "signUp": "إنشاء حساب",
+    "signIn": "تسجيل الدخول"
+  },
+  "profile": {
+    "skinProfile": "ملف البشرة",
+    "skinType": "نوع البشرة",
+    "concerns": "المشاكل",
+    "allergies": "الحساسية",
+    "currentRoutine": "الروتين الحالي",
+    "lifestyleFactors": "عوامل نمط الحياة",
+    "hydration": "الترطيب",
+    "sleep": "النوم",
+    "sunExposure": "التعرض للشمس",
+    "diet": "النظام الغذائي",
+    "environment": "البيئة",
+    "recommendations": "التوصيات",
+    "immediateActions": "الإجراءات الفورية",
+    "lifestyleChanges": "تغييرات نمط الحياة",
+    "recommendedProducts": "المنتجات الموصى بها",
+    "updateProfile": "تحديث الملف الشخصي"
+  },
+  "progress": {
+    "title": "تتبع التقدم",
+    "skinTypeChanges": "تغيرات نوع البشرة",
+    "concernChanges": "تقدم مشاكل البشرة",
+    "lifestyleChanges": "تغييرات نمط الحياة",
+    "recommendations": "التوصيات",
+    "previous": "السابق",
+    "current": "الحالي",
+    "currentConcerns": "المشاكل الحالية",
+    "resolvedConcerns": "المشاكل التي تم حلها",
+    "previousRecommendations": "التوصيات السابقة",
+    "currentRecommendations": "التوصيات الحالية",
+    "newRecommendations": "التوصيات الجديدة"
+  },
+  "routines": {
+    "title": "روتين العناية بالبشرة",
+    "createRoutine": "إنشاء روتين جديد",
+    "noRoutines": {
+      "title": "لا توجد روتينات حتى الآن",
+      "description": "قم بإنشاء أول روتين للعناية ببشرتك للبدء"
+    },
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "steps": "خطوات",
+    "moreSteps": "+{{count}} خطوات إضافية",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا الروتين؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteTitle": "حذف الروتين",
+    "routineDetails": {
+      "title": "تفاصيل الروتين",
+      "basicInfo": "المعلومات الأساسية",
+      "routineName": "اسم الروتين",
+      "routineType": "نوع الروتين",
+      "morning": "روتين الصباح",
+      "evening": "روتين المساء",
+      "steps": "خطوات الروتين",
+      "addStep": "إضافة خطوة",
+      "selectProduct": "اختر المنتج",
+      "stepNotes": "ملاحظات الخطوة",
+      "notesPlaceholder": "مثال: ضعي برفق بحركات دائرية",
+      "alternatives": "المنتجات البديلة",
+      "showAlternatives": "عرض البدائل",
+      "defaultProduct": "المنتج الافتراضي",
+      "feedback": {
+        "title": "إضافة تقييم",
+        "satisfaction": "ما مدى رضاك عن روتين العناية بالبشرة الحالي بشكل عام؟",
+        "skinChanges": "هل لاحظت تغييرات في مظهر أو ملمس بشرتك منذ بدء هذا الروتين؟",
+        "easeOfUse": "هل كان الروتين سهل الاتباع؟",
+        "unnecessaryProduct": "هل شعرت أن أي منتج غير ضروري أو صعب الاستخدام بانتظام؟",
+        "primaryConcern": "ما هو اهتمامك الرئيسي ببشرتك حالياً؟",
+        "routinePreference": "هل ترغب في:",
+        "options": {
+          "keepRoutine": "الاحتفاظ بنفس الروتين",
+          "adjustRoutine": "إجراء تعديلات بسيطة",
+          "newRoutine": "بدء روتين جديد"
+        }
+      }
+    },
+    "api": {
+      "routineCreated": "تم إنشاء روتين {{name}} بنجاح",
+      "routineUpdated": "تم تحديث روتين {{name}} بنجاح",
+      "routineDeleted": "تم حذف الروتين بنجاح",
+      "statusToggled": "تم تحديث حالة الروتين بنجاح",
+      "feedbackSubmitted": "شكراً على تقييمك"
+    }
+  },
+  "footer": {
+    "description": "مساعدك الشخصي للعناية بالبشرة. احصل على روتين مخصص يناسب بشرتك.",
+    "features": "المميزات",
+    "skinAssessment": "تقييم البشرة",
+    "customRoutines": "روتين مخصص",
+    "progressTracking": "تتبع التقدم",
+    "support": "الدعم",
+    "helpCenter": "مركز المساعدة",
+    "contactUs": "اتصل بنا",
+    "faq": "الأسئلة الشائعة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "newsletter": "النشرة الإخبارية",
+    "newsletterDescription": "اشترك للحصول على نصائح وتحديثات العناية بالبشرة.",
+    "emailPlaceholder": "بريدك الإلكتروني",
+    "subscribe": "اشترك",
+    "copyright": "© {{year}} دلال. جميع الحقوق محفوظة."
+  }
+}

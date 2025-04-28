@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Sign up",
+    "signIn": "Sign in"
+  },
+  "profile": {
+    "skinProfile": "Skin Profile",
+    "skinType": "Skin Type",
+    "concerns": "Concerns",
+    "allergies": "Allergies",
+    "currentRoutine": "Current Routine",
+    "lifestyleFactors": "Lifestyle Factors",
+    "hydration": "Hydration",
+    "sleep": "Sleep",
+    "sunExposure": "Sun Exposure",
+    "diet": "Diet",
+    "environment": "Environment",
+    "recommendations": "Recommendations",
+    "immediateActions": "Immediate Actions",
+    "lifestyleChanges": "Lifestyle Changes",
+    "recommendedProducts": "Recommended Products",
+    "updateProfile": "Update Profile"
+  },
+  "progress": {
+    "title": "Progress Tracking",
+    "skinTypeChanges": "Skin Type Changes",
+    "concernChanges": "Skin Concerns Progress",
+    "lifestyleChanges": "Lifestyle Changes",
+    "recommendations": "Recommendations",
+    "previous": "Previous",
+    "current": "Current",
+    "currentConcerns": "Current Concerns",
+    "resolvedConcerns": "Resolved Concerns",
+    "previousRecommendations": "Previous Recommendations",
+    "currentRecommendations": "Current Recommendations",
+    "newRecommendations": "New Recommendations"
+  },
+  "routines": {
+    "title": "Your Skincare Routines",
+    "createRoutine": "Create Routine",
+    "noRoutines": {
+      "title": "No routines yet",
+      "description": "Create your first skincare routine to get started"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "steps": "steps",
+    "moreSteps": "+{{count}} more steps",
+    "deleteConfirm": "Are you sure you want to delete this routine? This action cannot be undone.",
+    "deleteTitle": "Delete Routine",
+    "routineDetails": {
+      "title": "Routine Details",
+      "basicInfo": "Basic Information",
+      "routineName": "Routine Name",
+      "routineType": "Routine Type",
+      "morning": "Morning Routine",
+      "evening": "Evening Routine",
+      "steps": "Routine Steps",
+      "addStep": "Add Step",
+      "selectProduct": "Select Product",
+      "stepNotes": "Step Notes",
+      "notesPlaceholder": "e.g., Apply gently in circular motions",
+      "alternatives": "Alternative Products",
+      "showAlternatives": "Show Alternatives",
+      "defaultProduct": "Default Product",
+      "feedback": {
+        "title": "Give Feedback",
+        "satisfaction": "How satisfied are you with your current skincare routine overall?",
+        "skinChanges": "Have you noticed changes in your skin's appearance or texture since starting this routine?",
+        "easeOfUse": "Did your routine feel easy to follow?",
+        "unnecessaryProduct": "Did any product feel unnecessary or difficult to use regularly?",
+        "primaryConcern": "What is your current primary skin concern?",
+        "routinePreference": "Would you like to:",
+        "options": {
+          "keepRoutine": "Keep the same routine",
+          "adjustRoutine": "Make small adjustments",
+          "newRoutine": "Start a new routine"
+        }
+      }
+    },
+    "api": {
+      "routineCreated": "{{name}} routine created successfully",
+      "routineUpdated": "{{name}} routine updated successfully",
+      "routineDeleted": "Routine deleted successfully",
+      "statusToggled": "Routine status updated successfully",
+      "feedbackSubmitted": "Thank you for your feedback"
+    }
+  },
+  "footer": {
+    "description": "Your personal skincare assistant. Get custom routines tailored to your unique skin profile.",
+    "features": "Features",
+    "skinAssessment": "Skin Assessment",
+    "customRoutines": "Custom Routines",
+    "progressTracking": "Progress Tracking",
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "contactUs": "Contact Us",
+    "faq": "FAQ",
+    "privacyPolicy": "Privacy Policy",
+    "newsletter": "Newsletter",
+    "newsletterDescription": "Subscribe to get skincare tips and updates.",
+    "emailPlaceholder": "Your email",
+    "subscribe": "Subscribe",
+    "copyright": "© {{year}} Dalal. All rights reserved."
+  }
+}
