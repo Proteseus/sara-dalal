@@ -131,9 +131,11 @@ const Dashboard: React.FC = () => {
           <Card>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-medium text-gray-800">Recent Recommendations</h2>
-              <Button variant="outline" size="sm">
-                View All
-              </Button>
+              <Link to="/routines">
+                <Button variant="outline" size="sm">
+                  View All
+                </Button>
+              </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {data.recentRecommendations.map((product) => (
@@ -145,9 +147,6 @@ const Dashboard: React.FC = () => {
                   <p className="text-sm text-gray-600 mb-4">{product.description}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-primary font-medium">${product.price}</span>
-                    <Button variant="outline" size="sm">
-                      Learn More
-                    </Button>
                   </div>
                 </div>
               ))}

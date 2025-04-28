@@ -48,23 +48,44 @@ const generateRoutine = async (userId, recommendedProducts, skinProfile) => {
       productsByCategory[product.categoryId].push(product);
     });
 
-    // Create steps in category order
-    Object.entries(categoryOrder).forEach(([categoryId, category]) => {
-      const categoryProducts = productsByCategory[categoryId];
-      if (categoryProducts && categoryProducts.length > 0) {
-        // Sort products by score to get the best one first
-        const sortedProducts = [...categoryProducts].sort((a, b) => (b.score || 0) - (a.score || 0));
+    // Always include cleanser first if available
+    const cleanserCategory = Object.entries(categoryOrder).find(([_, cat]) => cat.name === 'Cleanser');
+    if (cleanserCategory) {
+      const [categoryId, category] = cleanserCategory;
+      const cleanserProducts = productsByCategory[categoryId];
+      if (cleanserProducts && cleanserProducts.length > 0) {
+        const sortedCleansers = [...cleanserProducts].sort((a, b) => (b.score || 0) - (a.score || 0));
         timeSteps.push({
           order: order++,
           time,
           categoryId: parseInt(categoryId),
           categoryName: category.name,
           notes: getCategoryNotes(category.name, time),
-          primaryProduct: sortedProducts[0],
-          alternativeProducts: sortedProducts.slice(1, 4) // Take up to 3 alternatives
+          primaryProduct: sortedCleansers[0],
+          alternativeProducts: sortedCleansers.slice(1, 4)
         });
+        delete productsByCategory[categoryId]; // Remove cleanser from remaining categories
       }
-    });
+    }
+
+    // Create steps for remaining categories in order
+    Object.entries(categoryOrder)
+      .filter(([_, cat]) => cat.name !== 'Cleanser') // Skip cleanser as it's already handled
+      .forEach(([categoryId, category]) => {
+        const categoryProducts = productsByCategory[categoryId];
+        if (categoryProducts && categoryProducts.length > 0) {
+          const sortedProducts = [...categoryProducts].sort((a, b) => (b.score || 0) - (a.score || 0));
+          timeSteps.push({
+            order: order++,
+            time,
+            categoryId: parseInt(categoryId),
+            categoryName: category.name,
+            notes: getCategoryNotes(category.name, time),
+            primaryProduct: sortedProducts[0],
+            alternativeProducts: sortedProducts.slice(1, 4)
+          });
+        }
+      });
 
     return timeSteps;
   };
@@ -361,31 +382,68 @@ const analyzeProductRecommendations = async (responses, skinProfile) => {
 
   // Select top products from each category and format as alternatives
   const recommendedProducts = [];
-  Object.values(productsByCategory).forEach(categoryGroup => {
-    // Sort by score in descending order
-    const sortedProducts = categoryGroup.products.sort((a, b) => b.score - a.score);
-    
-    // Take top 3 products as alternatives
-    if (sortedProducts.length > 0) {
+  
+  // Helper function to add products for a category
+  const addCategoryProducts = (categoryGroup) => {
+    if (categoryGroup.products.length > 0) {
+      const sortedProducts = categoryGroup.products.sort((a, b) => b.score - a.score);
+      const topProduct = sortedProducts[0];
+      const alternatives = sortedProducts.slice(1, 4).filter(p => p.score > 0);
+      
       recommendedProducts.push({
         category: categoryGroup.category,
-        alternatives: sortedProducts.slice(0, 3).map(product => ({
-          id: product.id,
-          name: product.name,
-          brand: product.brand,
-          description: product.description,
-          price: product.price,
-          size: product.size,
-          unit: product.unit,
-          keyIngredients: product.keyIngredients,
-          isNatural: product.isNatural,
-          isGentle: product.isGentle,
-          score: product.score,
-          scoreBreakdown: product.scoreBreakdown,
-          userRating: product.userRating
-        }))
+        alternatives: [
+          {
+            id: topProduct.id,
+            name: topProduct.name,
+            brand: topProduct.brand,
+            description: topProduct.description,
+            price: topProduct.price,
+            size: topProduct.size,
+            unit: topProduct.unit,
+            keyIngredients: topProduct.keyIngredients,
+            isNatural: topProduct.isNatural,
+            isGentle: topProduct.isGentle,
+            score: topProduct.score,
+            scoreBreakdown: topProduct.scoreBreakdown,
+            userRating: topProduct.userRating
+          },
+          ...alternatives.map(product => ({
+            id: product.id,
+            name: product.name,
+            brand: product.brand,
+            description: product.description,
+            price: product.price,
+            size: product.size,
+            unit: product.unit,
+            keyIngredients: product.keyIngredients,
+            isNatural: product.isNatural,
+            isGentle: product.isGentle,
+            score: product.score,
+            scoreBreakdown: product.scoreBreakdown,
+            userRating: product.userRating
+          }))
+        ]
       });
     }
+  };
+
+  // First, ensure cleanser and moisturizer are included
+  const essentialCategories = ['Cleanser', 'Moisturizer'];
+  essentialCategories.forEach(categoryName => {
+    const categoryGroup = Object.values(productsByCategory).find(
+      group => group.category?.name === categoryName
+    );
+    if (categoryGroup) {
+      addCategoryProducts(categoryGroup);
+      // Remove from productsByCategory to avoid duplicate processing
+      delete productsByCategory[categoryGroup.category?.id];
+    }
+  });
+
+  // Then process remaining categories
+  Object.values(productsByCategory).forEach(categoryGroup => {
+    addCategoryProducts(categoryGroup);
   });
 
   // Sort categories by average score of their top product
