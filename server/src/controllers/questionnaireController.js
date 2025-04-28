@@ -95,7 +95,7 @@ export const submitResponses = async (req, res) => {
     const skinProfile = await analyzeResponses(userId, responses);
 
     // Send routine created email
-    await sendRoutineCreatedEmail(userId, skinProfile.user.email, skinProfile.user.name);
+    await sendRoutineCreatedEmail(userId);
 
     res.status(201).json({
       message: 'Responses submitted successfully',

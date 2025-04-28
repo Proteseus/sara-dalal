@@ -124,14 +124,18 @@ export const sendGreetingEmail = async (email, username) => {
  * @param {Object} routine - Routine details
  * @returns {Promise<Object>} - Email sending result
  */
-export const sendRoutineCreatedEmail = async (email, username, routine) => {
+export const sendRoutineCreatedEmail = async (userId) => {
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: email,
+      to: user.email,
       subject: 'Your Routine Has Been Created',
       html: `
-        <h2>Hello ${username}!</h2>
+        <h2>Hello ${user.firstName}!</h2>
         <p>Your routine has been created!</p>
         <p>We're excited to have you on board!</p>
         <p>Stay consistent for the best results!</p>
