@@ -28,7 +28,7 @@ const prisma = new PrismaClient({
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:4000", "https://dalal.lewibelayneh.com"], // Frontend's URL
+  origin: ["http://localhost:4000", "https://dalal.lewibelayneh.com", "https://dalal.mssaba.com"], // Frontend's URL
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true, // Allow cookies if needed
