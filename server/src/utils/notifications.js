@@ -89,7 +89,7 @@ export const scheduleRoutineReminders = async () => {
 }; 
 
 /**
- * Send a routine reminder email
+ * Send a welcome email
  * @param {string} email - User's email address
  * @param {string} username - User's name
  * @param {Object} routine - Routine details
@@ -113,6 +113,34 @@ export const sendGreetingEmail = async (email, username) => {
     return await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error('Error sending routine reminder:', error);
+    throw error;
+  }
+};
+
+/**
+ * Send a routine created  email
+ * @param {string} email - User's email address
+ * @param {string} username - User's name
+ * @param {Object} routine - Routine details
+ * @returns {Promise<Object>} - Email sending result
+ */
+export const sendRoutineCreatedEmail = async (email, username, routine) => {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Your Routine Has Been Created',
+      html: `
+        <h2>Hello ${username}!</h2>
+        <p>Your routine has been created!</p>
+        <p>We're excited to have you on board!</p>
+        <p>Stay consistent for the best results!</p>
+      `
+    };
+
+    return await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending routine created email:', error);
     throw error;
   }
 };

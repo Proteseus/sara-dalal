@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { analyzeResponses } from '../utils/alnalyzeResponse.js';
 import { analyzeFeedbackResponses } from '../utils/feedbackAnalysis.js';
+import { sendRoutineCreatedEmail } from '../utils/notifications.js';
 
 const prisma = new PrismaClient();
 
@@ -92,6 +93,9 @@ export const submitResponses = async (req, res) => {
 
     // Analyze responses and update skin profile
     const skinProfile = await analyzeResponses(userId, responses);
+
+    // Send routine created email
+    await sendRoutineCreatedEmail(userId, skinProfile.user.email, skinProfile.user.name);
 
     res.status(201).json({
       message: 'Responses submitted successfully',
