@@ -46,6 +46,7 @@
   },
   "progress": {
     "title": "Progress Tracking",
+    "retry": "Create profile",
     "skinTypeChanges": "Skin Type Changes",
     "concernChanges": "Skin Concerns Progress",
     "lifestyleChanges": "Lifestyle Changes",

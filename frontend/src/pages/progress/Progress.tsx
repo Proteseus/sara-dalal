@@ -7,7 +7,7 @@ import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import { useTranslation } from 'react-i18next';
-
+import { Link } from 'react-router-dom';
 const Progress: React.FC = () => {
   const { t } = useTranslation();
   const { authState } = useAuth();
@@ -46,11 +46,13 @@ const Progress: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-medium text-gray-800 mb-4">
-              {error || 'Failed to load progress'}
+              {'No progress data available'}
             </h1>
-            <Button onClick={fetchData}>
-              {t('common.retry')}
-            </Button>
+            <Link to="/questionnaire">
+              <Button>
+                {t('progress.retry')}
+              </Button>
+            </Link>
           </div>
         </div>
       </Layout>

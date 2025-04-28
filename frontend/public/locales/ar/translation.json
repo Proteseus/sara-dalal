@@ -46,6 +46,7 @@
   },
   "progress": {
     "title": "تتبع التقدم",
+    "retry": "إنشاء ملف تعريفي",
     "skinTypeChanges": "تغيرات نوع البشرة",
     "concernChanges": "تقدم مشاكل البشرة",
     "lifestyleChanges": "تغييرات نمط الحياة",
