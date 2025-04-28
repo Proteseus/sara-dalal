@@ -16,44 +16,6 @@ const generateRoutine = async (userId, recommendedProducts, skinProfile) => {
     8: { name: 'Sunscreen', order: 8 }
   };
 
-  // Define treatment types within each category
-  const treatmentTypes = {
-    Cleanser: {
-      oil: ['Oil Cleanser', 'Cleansing Balm', 'Cleansing Oil'],
-      water: ['Foaming Cleanser', 'Gel Cleanser', 'Cream Cleanser']
-    },
-    Toner: {
-      hydrating: ['Hydrating Toner', 'Essence Toner', 'pH Balancing Toner'],
-      exfoliating: ['AHA Toner', 'BHA Toner', 'PHA Toner'],
-      treatment: ['Treatment Toner', 'Medicated Toner']
-    },
-    Serum: {
-      treatment: ['Vitamin C', 'Retinol', 'Niacinamide', 'Hyaluronic Acid', 'Peptide'],
-      targeted: ['Acne Treatment', 'Brightening', 'Anti-Aging', 'Hydration', 'Soothing']
-    },
-    Moisturizer: {
-      basic: ['Light Moisturizer', 'Gel Cream', 'Cream'],
-      treatment: ['Treatment Cream', 'Night Cream', 'Sleeping Mask'],
-      barrier: ['Barrier Cream', 'Ceramide Cream']
-    },
-    Exfoliant: {
-      chemical: ['AHA', 'BHA', 'PHA', 'Enzyme'],
-      physical: ['Gentle Scrub', 'Exfoliating Pad']
-    },
-    Scrub: {
-      gentle: ['Gentle Scrub', 'Sugar Scrub'],
-      deep: ['Deep Scrub', 'Clay Scrub']
-    },
-    'Eye Cream': {
-      basic: ['Basic Eye Cream', 'Hydrating Eye Cream'],
-      treatment: ['Anti-Aging Eye Cream', 'Brightening Eye Cream']
-    },
-    Sunscreen: {
-      daily: ['Daily Sunscreen', 'Light Sunscreen'],
-      treatment: ['Tinted Sunscreen', 'Mineral Sunscreen']
-    }
-  };
-
   // First, create the routine
   const routine = await prisma.userRoutine.create({
     data: {
