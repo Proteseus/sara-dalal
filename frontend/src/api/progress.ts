@@ -2,36 +2,18 @@ import { ProgressReport, ProgressSummary } from '../types/progress';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getProgressReport = async (
-  token: string,
-  startDate: string,
-  endDate: string
-): Promise<ProgressReport> => {
-  try {
-    const response = await fetch(
-      `${API_URL}/progress/report?startDate=${startDate}&endDate=${endDate}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
+export const getProgressReport = async (token: string): Promise<ProgressReport> => {
+  const response = await fetch(`${API_URL}/progress/report`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to fetch progress report');
-    }
-
-    const { data } = await response.json();
-    return data;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
+  if (!response.ok) {
     throw new Error('Failed to fetch progress report');
   }
+
+  return await response.json();
 };
 
 export const getProgressSummary = async (token: string): Promise<ProgressSummary[]> => {

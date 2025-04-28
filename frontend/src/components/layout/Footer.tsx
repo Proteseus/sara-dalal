@@ -1,7 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Footer: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'ar' ? 'en' : 'ar';
+    i18n.changeLanguage(newLang);
+    document.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+  };
+
   return (
     <footer className="bg-background-dark py-8 mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -9,7 +18,7 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="font-serif text-xl font-semibold text-gray-800 mb-4">Dalal</h3>
             <p className="text-gray-600 mb-4">
-              Your personal skincare assistant. Get custom routines tailored to your unique skin profile.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-primary hover:text-primary-dark transition-colors">
@@ -27,72 +36,78 @@ const Footer: React.FC = () => {
             </div>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800 mb-4">Features</h3>
+            <h3 className="font-medium text-gray-800 mb-4">{t('footer.features')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/questionnaire/initial" className="text-gray-600 hover:text-primary transition-colors">
-                  Skin Assessment
+                <Link to="/questionnaire/" className="text-gray-600 hover:text-primary transition-colors">
+                  {t('footer.skinAssessment')}
                 </Link>
               </li>
               <li>
                 <Link to="/routines" className="text-gray-600 hover:text-primary transition-colors">
-                  Custom Routines
+                  {t('footer.customRoutines')}
                 </Link>
               </li>
               <li>
                 <Link to="/progress" className="text-gray-600 hover:text-primary transition-colors">
-                  Progress Tracking
+                  {t('footer.progressTracking')}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800 mb-4">Support</h3>
+            <h3 className="font-medium text-gray-800 mb-4">{t('footer.support')}</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#" className="text-gray-600 hover:text-primary transition-colors">
-                  Help Center
+                  {t('footer.helpCenter')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-primary transition-colors">
-                  Contact Us
+                  {t('footer.contactUs')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-primary transition-colors">
-                  FAQ
+                  {t('footer.faq')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-primary transition-colors">
-                  Privacy Policy
+                  {t('footer.privacyPolicy')}
                 </a>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-gray-800 mb-4">Newsletter</h3>
+            <h3 className="font-medium text-gray-800 mb-4">{t('footer.newsletter')}</h3>
             <p className="text-gray-600 mb-4">
-              Subscribe to get skincare tips and updates.
+              {t('footer.newsletterDescription')}
             </p>
-            <form className="flex">
+            <form className="flex mb-4">
               <input
                 type="email"
-                placeholder="Your email"
+                placeholder={t('footer.emailPlaceholder')}
                 className="px-4 py-2 w-full rounded-l-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
               <button 
                 type="submit"
                 className="bg-primary text-white px-4 py-2 rounded-r-xl hover:bg-primary-dark transition-colors"
               >
-                Subscribe
+                {t('footer.subscribe')}
               </button>
             </form>
+            <button
+              onClick={toggleLanguage}
+              className="text-gray-600 hover:text-primary transition-colors"
+            >
+              {i18n.language === 'ar' ? 'English' : 'العربية'}
+            </button>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-200 text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Dalal. All rights reserved.</p>
+          <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
         </div>
       </div>
     </footer>

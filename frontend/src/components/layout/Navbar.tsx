@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
                 <Link to="/routines" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
                   Routines
                 </Link>
-                <Link to="/questionnaire/initial" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
+                <Link to="/questionnaire" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
                   Assessment
                 </Link>
                 <Link to="/progress" className="text-gray-600 hover:text-primary transition-colors px-3 py-2">
@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
                   Routines
                 </Link>
                 <Link
-                  to="/questionnaire/initial"
+                  to="/questionnaire"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-secondary-light transition-colors"
                   onClick={closeMenu}
                 >

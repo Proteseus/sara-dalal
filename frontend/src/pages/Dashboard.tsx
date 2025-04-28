@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Calendar, TrendingUp, Sun, Moon, Star, Clock, ChevronRight, Loader2 } from 'lucide-react';
+import { Calendar, TrendingUp, Sun, Moon, Star, Clock, ChevronRight, Loader2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getDashboardData } from '../api/dashboard';
 import Layout from '../components/layout/Layout';
@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
               Here's an overview of your skincare journey
             </p>
           </div>
-          <Link to="/questionnaire/initial">
+          <Link to="/questionnaire">
             <Button>
               Update Assessment
             </Button>
@@ -126,83 +126,6 @@ const Dashboard: React.FC = () => {
             </p>
           </Card>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Progress Overview */}
-          <div className="lg:col-span-2">
-            <Card>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-medium text-gray-800">Progress Overview</h2>
-                <Link to="/progress" className="text-primary hover:text-primary-dark transition-colors">
-                  View Details
-                </Link>
-              </div>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={data.progress.summary}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    {Object.keys(data.progress.summary[0]?.averages || {}).map((metric, index) => (
-                      <Line
-                        key={metric}
-                        type="monotone"
-                        dataKey={`averages.${metric}`}
-                        stroke={`hsl(${index * 60}, 70%, 50%)`}
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                      />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
-          </div>
-
-          {/* Upcoming Steps */}
-          <div>
-            <Card>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-medium text-gray-800">Today's Steps</h2>
-                <Link to="/routines" className="text-primary hover:text-primary-dark transition-colors">
-                  View All
-                </Link>
-              </div>
-              <div className="space-y-4">
-                {data.upcomingSteps.map((step) => (
-                  <div
-                    key={step.id}
-                    className="flex items-start p-4 rounded-xl border border-gray-200 hover:border-primary transition-colors"
-                  >
-                    <span className="p-2 bg-primary/10 rounded-full mr-4">
-                      {step.time.toLowerCase().includes('morning') ? (
-                        <Sun size={20} className="text-yellow-500" />
-                      ) : (
-                        <Moon size={20} className="text-indigo-500" />
-                      )}
-                    </span>
-                    <div>
-                      <h3 className="font-medium text-gray-800">{step.product.name}</h3>
-                      <p className="text-sm text-gray-600">{step.notes}</p>
-                      <Link
-                        to={`/routines/${step.routineId}`}
-                        className="text-sm text-primary hover:text-primary-dark transition-colors inline-flex items-center mt-2"
-                      >
-                        {step.routineName}
-                        <ChevronRight size={16} className="ml-1" />
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
-        </div>
-
         {/* Recent Recommendations */}
         <div className="mt-8">
           <Card>

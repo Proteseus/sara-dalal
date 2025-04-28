@@ -24,7 +24,7 @@ const Home: React.FC = () => {
                     Get Started <ChevronRight size={18} className="ml-1" />
                   </Button>
                 </Link>
-                <Link to="/questionnaire/initial">
+                <Link to="/questionnaire">
                   <Button variant="outline" size="lg">
                     Take Skin Quiz
                   </Button>

@@ -89,41 +89,89 @@ export const getDashboardData = async (req, res) => {
       progressReport = compareResponses(firstResponses, lastResponses);
     }
 
-    // Get monthly progress summary
+    // Get monthly progress summary with enhanced metrics
     const monthlyProgress = responses.reduce((acc, response) => {
       const month = response.createdAt.toISOString().slice(0, 7);
       if (!acc[month]) {
-        acc[month] = [];
+        acc[month] = {
+          responses: [],
+          metrics: {
+            skinHealth: {},
+            lifestyle: {},
+            routineAdherence: {},
+            productEfficacy: {}
+          }
+        };
       }
-      acc[month].push(response);
+      acc[month].responses.push(response);
       return acc;
     }, {});
 
-    const progressSummary = Object.entries(monthlyProgress).map(([month, monthResponses]) => {
-      const numericalResponses = monthResponses.filter(r => 
+    const progressSummary = Object.entries(monthlyProgress).map(([month, monthData]) => {
+      const numericalResponses = monthData.responses.filter(r => 
         r.question.type === 'NUMERICAL' || r.question.type === 'RATING'
       );
 
+      // Calculate averages for different categories
       const averages = numericalResponses.reduce((acc, response) => {
         const value = parseFloat(response.answer);
-        if (!acc[response.question.text]) {
-          acc[response.question.text] = {
+        const category = response.question.category || 'general';
+        
+        if (!acc[category]) {
+          acc[category] = {};
+        }
+        
+        if (!acc[category][response.question.text]) {
+          acc[category][response.question.text] = {
             sum: 0,
-            count: 0
+            count: 0,
+            min: Infinity,
+            max: -Infinity
           };
         }
-        acc[response.question.text].sum += value;
-        acc[response.question.text].count += 1;
+        
+        const metric = acc[category][response.question.text];
+        metric.sum += value;
+        metric.count += 1;
+        metric.min = Math.min(metric.min, value);
+        metric.max = Math.max(metric.max, value);
+        
         return acc;
       }, {});
 
-      Object.keys(averages).forEach(question => {
-        averages[question] = averages[question].sum / averages[question].count;
+      // Calculate final metrics for each category
+      const metrics = {};
+      Object.entries(averages).forEach(([category, questions]) => {
+        metrics[category] = {};
+        Object.entries(questions).forEach(([question, data]) => {
+          metrics[category][question] = {
+            average: data.sum / data.count,
+            range: {
+              min: data.min,
+              max: data.max
+            },
+            consistency: (data.max - data.min) / data.count
+          };
+        });
+      });
+
+      // Calculate trend indicators
+      const trendIndicators = {};
+      Object.entries(metrics).forEach(([category, questions]) => {
+        trendIndicators[category] = {};
+        Object.entries(questions).forEach(([question, data]) => {
+          trendIndicators[category][question] = {
+            direction: data.average > (data.range.min + data.range.max) / 2 ? 'improving' : 'declining',
+            stability: data.consistency < 0.5 ? 'stable' : 'volatile'
+          };
+        });
       });
 
       return {
         month,
-        averages
+        metrics,
+        trendIndicators,
+        responseCount: monthData.responses.length
       };
     });
 

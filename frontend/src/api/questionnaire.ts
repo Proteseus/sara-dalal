@@ -76,3 +76,56 @@ export const getSkinProfile = async (token: string): Promise<SkinProfile> => {
     throw new Error('Failed to fetch skin profile');
   }
 };
+
+export const getFeedbackQuestions = async (token: string): Promise<QuestionnaireQuestion[]> => {
+  try {
+    const response = await fetch(`${API_URL}/questionnaire/feedback-questions`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to fetch feedback questions');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error('Failed to fetch feedback questions');
+  }
+};
+
+
+export const submitFeedback = async (
+  responses: QuestionnaireResponse[], 
+  token: string
+): Promise<{ message: string; count: number; skinProfile: SkinProfile }> => {
+  try {
+    const response = await fetch(`${API_URL}/questionnaire/feedback`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ responses }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to submit responses');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error('Failed to submit responses');
+  }
+};

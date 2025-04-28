@@ -37,6 +37,20 @@ model SkinProfile {
   recommendations Json?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  history       SkinProfileHistory[]
+}
+
+model SkinProfileHistory {
+  id            Int      @id @default(autoincrement())
+  skinProfileId Int
+  skinProfile   SkinProfile @relation(fields: [skinProfileId], references: [id])
+  skinType      String?
+  concerns      String[]
+  allergies     String[]
+  currentRoutine String?
+  lifestyleFactors Json?
+  recommendations Json?
+  createdAt     DateTime @default(now())
 }
 
 model Product {

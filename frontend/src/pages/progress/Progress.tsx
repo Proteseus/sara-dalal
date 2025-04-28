@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Calendar, TrendingUp, ArrowUpRight, ArrowDownRight, Loader2 } from 'lucide-react';
+import { format } from 'date-fns';
+import { ArrowUpRight, ArrowDownRight, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { getProgressReport, getProgressSummary } from '../../api/progress';
+import { getProgressReport } from '../../api/progress';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
-import { ProgressReport, ProgressSummary } from '../../types/progress';
+import { useTranslation } from 'react-i18next';
 
 const Progress: React.FC = () => {
+  const { t } = useTranslation();
   const { authState } = useAuth();
-  const [report, setReport] = useState<ProgressReport | null>(null);
-  const [summary, setSummary] = useState<ProgressSummary[]>([]);
+  const [report, setReport] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -23,40 +21,13 @@ const Progress: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const startDate = format(startOfMonth(subMonths(new Date(), 3)), 'yyyy-MM-dd');
-      const endDate = format(endOfMonth(new Date()), 'yyyy-MM-dd');
-
-      const [reportData, summaryData] = await Promise.all([
-        getProgressReport(authState.user!.token, startDate, endDate),
-        getProgressSummary(authState.user!.token)
-      ]);
-
-      setReport(reportData);
-      setSummary(summaryData);
-      
-      // Set the first metric as selected by default
-      if (summaryData.length > 0 && Object.keys(summaryData[0].averages).length > 0) {
-        setSelectedMetric(Object.keys(summaryData[0].averages)[0]);
-      }
-      
+      const response = await getProgressReport(authState.user!.token);
+      setReport(response.data);
       setIsLoading(false);
     } catch (err) {
       setError('Failed to load progress data');
       setIsLoading(false);
     }
-  };
-
-  const getMetricTrend = (metric: string): { value: number; isPositive: boolean } => {
-    if (summary.length < 2) return { value: 0, isPositive: true };
-    
-    const currentMonth = summary[summary.length - 1].averages[metric] || 0;
-    const previousMonth = summary[summary.length - 2].averages[metric] || 0;
-    const change = ((currentMonth - previousMonth) / previousMonth) * 100;
-    
-    return {
-      value: Math.abs(change),
-      isPositive: change >= 0
-    };
   };
 
   if (isLoading) {
@@ -69,117 +40,197 @@ const Progress: React.FC = () => {
     );
   }
 
+  if (!report) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-medium text-gray-800 mb-4">
+              {error || 'Failed to load progress'}
+            </h1>
+            <Button onClick={fetchData}>
+              {t('common.retry')}
+            </Button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="font-serif text-3xl font-semibold text-gray-800">
-            Progress Tracking
+            {t('progress.title')}
           </h1>
-          <div className="flex gap-4">
-            <Button variant="outline">
-              <Calendar size={20} className="mr-2" />
-              Last 3 Months
-            </Button>
-            <Button>
-              <TrendingUp size={20} className="mr-2" />
-              Export Report
-            </Button>
-          </div>
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-xl">
-            {error}
-          </div>
-        )}
-
-        {/* Metrics Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {summary.length > 0 && Object.entries(summary[summary.length - 1].averages).map(([metric, value]) => {
-            const trend = getMetricTrend(metric);
-            return (
-              <Card 
-                key={metric}
-                className={`cursor-pointer transition-all ${
-                  selectedMetric === metric ? 'ring-2 ring-primary' : ''
-                }`}
-                onClick={() => setSelectedMetric(metric)}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-gray-600">{metric}</h3>
-                  <span className={`flex items-center text-sm ${
-                    trend.isPositive ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {trend.isPositive ? (
-                      <ArrowUpRight size={16} className="mr-1" />
-                    ) : (
-                      <ArrowDownRight size={16} className="mr-1" />
-                    )}
-                    {trend.value.toFixed(1)}%
-                  </span>
-                </div>
-                <p className="text-2xl font-semibold text-gray-800">
-                  {value.toFixed(1)}
-                </p>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Progress Chart */}
+        {/* Skin Type Changes */}
         <Card className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-medium text-gray-800">Progress Over Time</h2>
-          </div>
-
-          <div className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={summary}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                {selectedMetric && (
-                  <Line
-                    type="monotone"
-                    dataKey={`averages.${selectedMetric}`}
-                    stroke="#FF69B4"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                    activeDot={{ r: 8 }}
-                  />
-                )}
-              </LineChart>
-            </ResponsiveContainer>
+          <h2 className="text-xl font-medium text-gray-800 mb-6">
+            {t('progress.skinTypeChanges')}
+          </h2>
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+            <div>
+              <p className="text-sm text-gray-500 mb-1">{t('progress.previous')}</p>
+              <p className="text-lg font-medium">{report.skinType.previous}</p>
+            </div>
+            <div className="flex items-center">
+              {report.skinType.changed ? (
+                <TrendingUp className="text-primary w-6 h-6" />
+              ) : (
+                <div className="w-6 h-0.5 bg-gray-300" />
+              )}
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1">{t('progress.current')}</p>
+              <p className="text-lg font-medium">{report.skinType.current}</p>
+            </div>
           </div>
         </Card>
 
-        {/* Timeline */}
-        <Card>
-          <h2 className="text-xl font-medium text-gray-800 mb-6">Progress Timeline</h2>
+        {/* Concerns Changes */}
+        <Card className="mb-8">
+          <h2 className="text-xl font-medium text-gray-800 mb-6">
+            {t('progress.concernChanges')}
+          </h2>
           <div className="space-y-6">
-            {report?.timeline.map((entry) => (
-              <div key={entry.date} className="border-l-2 border-primary pl-4">
-                <div className="flex items-center mb-2">
-                  <Calendar size={16} className="text-primary mr-2" />
-                  <span className="font-medium text-gray-800">
-                    {format(new Date(entry.date), 'MMMM d, yyyy')}
+            {/* Current Concerns */}
+            <div>
+              <h3 className="font-medium text-gray-700 mb-3">{t('progress.currentConcerns')}</h3>
+              <div className="flex flex-wrap gap-2">
+                {report.concerns.current.map((concern: string) => (
+                  <span
+                    key={concern}
+                    className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
+                  >
+                    {concern}
                   </span>
-                </div>
-                <div className="space-y-2">
-                  {entry.responses.map((response) => (
-                    <div key={response.id} className="text-gray-600">
-                      <span className="font-medium">{response.question.text}:</span>{' '}
-                      {response.answer}
-                    </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Removed Concerns */}
+            {report.concerns.removed.length > 0 && (
+              <div>
+                <h3 className="font-medium text-gray-700 mb-3">{t('progress.resolvedConcerns')}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {report.concerns.removed.map((concern: string) => (
+                    <span
+                      key={concern}
+                      className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
+                    >
+                      {concern}
+                    </span>
                   ))}
                 </div>
               </div>
+            )}
+          </div>
+        </Card>
+
+        {/* Lifestyle Changes */}
+        <Card className="mb-8">
+          <h2 className="text-xl font-medium text-gray-800 mb-6">
+            {t('progress.lifestyleChanges')}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Object.entries(report.lifestyleFactors).map(([factor, data]: [string, any]) => (
+              <div
+                key={factor}
+                className="p-4 bg-gray-50 rounded-xl"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-gray-800 capitalize">{factor}</h3>
+                  {data.improved ? (
+                    <ArrowUpRight className="text-green-500 w-5 h-5" />
+                  ) : (
+                    data.previous !== data.current && (
+                      <ArrowDownRight className="text-red-500 w-5 h-5" />
+                    )
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">{t('progress.previous')}:</span>
+                    <span className="font-medium">{data.previous}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">{t('progress.current')}:</span>
+                    <span className="font-medium">{data.current}</span>
+                  </div>
+                </div>
+              </div>
             ))}
+          </div>
+        </Card>
+
+        {/* Recommendations */}
+        <Card>
+          <h2 className="text-xl font-medium text-gray-800 mb-6">
+            {t('progress.recommendations')}
+          </h2>
+          <div className="space-y-6">
+            {/* Previous Lifestyle Recommendations */}
+            {report.recommendations.previous.lifestyle.length > 0 && (
+              <div>
+                <h3 className="font-medium text-gray-700 mb-3">
+                  {t('progress.previousRecommendations')}
+                </h3>
+                <ul className="space-y-2">
+                  {report.recommendations.previous.lifestyle.map((rec: string, index: number) => (
+                    <li
+                      key={index}
+                      className="flex items-start space-x-2 text-gray-600"
+                    >
+                      <TrendingDown className="w-5 h-5 text-gray-400 mt-0.5" />
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Current Lifestyle Recommendations */}
+            {report.recommendations.current.lifestyle.length > 0 && (
+              <div>
+                <h3 className="font-medium text-gray-700 mb-3">
+                  {t('progress.currentRecommendations')}
+                </h3>
+                <ul className="space-y-2">
+                  {report.recommendations.current.lifestyle.map((rec: string, index: number) => (
+                    <li
+                      key={index}
+                      className="flex items-start space-x-2 text-gray-600"
+                    >
+                      <TrendingUp className="w-5 h-5 text-primary mt-0.5" />
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* New Recommendations */}
+            {report.recommendations.new.length > 0 && (
+              <div>
+                <h3 className="font-medium text-gray-700 mb-3">
+                  {t('progress.newRecommendations')}
+                </h3>
+                <ul className="space-y-2">
+                  {report.recommendations.new.map((rec: string, index: number) => (
+                    <li
+                      key={index}
+                      className="flex items-start space-x-2 text-gray-600"
+                    >
+                      <span className="flex-shrink-0 w-2 h-2 rounded-full bg-primary mt-2" />
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </Card>
       </div>
