@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../ui/Button';
+import { useTranslation } from 'react-i18next';
+import logo from '../../assets/images/logo.png';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,6 +26,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center">
+            <img src={logo} alt="Dalal Logo" className="h-8 w-auto" />
             <span className="font-serif text-2xl font-semibold text-primary">Dalal</span>
           </Link>
 
