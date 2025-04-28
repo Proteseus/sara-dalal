@@ -189,11 +189,11 @@ const Register: React.FC = () => {
                 <div className="ml-3 text-sm">
                   <label htmlFor="terms" className="text-gray-600">
                     I agree to the{' '}
-                    <a href="#" className="font-medium text-primary hover:text-primary-dark transition-colors">
+                    <a href="/terms" className="font-medium text-primary hover:text-primary-dark transition-colors">
                       Terms of Service
                     </a>{' '}
                     and{' '}
-                    <a href="#" className="font-medium text-primary hover:text-primary-dark transition-colors">
+                    <a href="/privacy" className="font-medium text-primary hover:text-primary-dark transition-colors">
                       Privacy Policy
                     </a>
                   </label>

@@ -12,6 +12,9 @@ import RoutineList from './pages/routines/RoutineList';
 import RoutineDetails from './pages/routines/RoutineDetails';
 import CreateRoutine from './pages/routines/CreateRoutine';
 import Progress from './pages/progress/Progress';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import ContactUs from './pages/ContactUs';
 
 // Protected Route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,6 +41,9 @@ const AppRoutes: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/contact" element={<ContactUs />} />
         
         {/* Protected Routes */}
         <Route 

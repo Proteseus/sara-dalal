@@ -59,22 +59,12 @@ const Footer: React.FC = () => {
             <h3 className="font-medium text-gray-800 mb-4">{t('footer.support')}</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-600 hover:text-primary transition-colors">
-                  {t('footer.helpCenter')}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-primary transition-colors">
+                <a href="/contact" className="text-gray-600 hover:text-primary transition-colors">
                   {t('footer.contactUs')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-primary transition-colors">
-                  {t('footer.faq')}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-primary transition-colors">
+                <a href="/privacy" className="text-gray-600 hover:text-primary transition-colors">
                   {t('footer.privacyPolicy')}
                 </a>
               </li>
