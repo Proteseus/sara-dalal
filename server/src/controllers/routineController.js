@@ -220,12 +220,24 @@ export const deleteRoutine = async (req, res) => {
       });
     }
 
-    // First delete all steps associated with the routine
+    // 1. Find all step IDs for this routine
+    const steps = await prisma.routineStep.findMany({
+      where: { routineId: i },
+      select: { id: true }
+    });
+    const stepIds = steps.map(step => step.id);
+
+    // 2. Delete all StepAlternative records for these steps
+    await prisma.stepAlternative.deleteMany({
+      where: { stepId: { in: stepIds } }
+    });
+
+    // 3. Delete all steps associated with the routine
     await prisma.routineStep.deleteMany({
       where: { routineId: i }
     });
 
-    // Then delete the routine
+    // 4. Then delete the routine
     await prisma.userRoutine.delete({
       where: { id: i }
     });
