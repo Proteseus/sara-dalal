@@ -12,8 +12,56 @@
     "logout": "Logout"
   },
   "auth": {
-    "login": "Login",
-    "register": "Register",
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to access your personalized skincare routine",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "signIn": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up now",
+      "emailPlaceholder": "your@email.com",
+      "passwordPlaceholder": "••••••",
+      "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Email is invalid",
+        "passwordRequired": "Password is required",
+        "passwordLength": "Password must be at least 6 characters"
+      }
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Sign up to get personalized skincare routines",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "firstNamePlaceholder": "Jane",
+      "lastNamePlaceholder": "Doe",
+      "emailPlaceholder": "your@email.com",
+      "passwordPlaceholder": "••••••",
+      "confirmPasswordPlaceholder": "••••••",
+      "terms": "I agree to the",
+      "termsLink": "Terms of Service",
+      "and": "and",
+      "privacyLink": "Privacy Policy",
+      "disclaimer": "I understand that recommendations provided by Dalal are merely informational and not medical advices",
+      "createAccount": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "validation": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Email is invalid",
+        "passwordRequired": "Password is required",
+        "passwordLength": "Password must be at least 6 characters",
+        "passwordsMatch": "Passwords do not match"
+      }
+    },
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",
@@ -126,5 +174,129 @@
     "emailPlaceholder": "Your email",
     "subscribe": "Subscribe",
     "copyright": "© {{year}} Dalal. All rights reserved."
+  },
+  "home": {
+    "hero": {
+      "title": "Your Personalized Skincare Journey Starts Here",
+      "subtitle": "Discover custom skincare routines tailored specifically to your skin's unique needs and concerns.",
+      "getStarted": "Get Started",
+      "takeQuiz": "Take Skin Quiz"
+    },
+    "features": {
+      "title": "How Dalal Works",
+      "subtitle": "Get personalized skincare routines in three simple steps",
+      "step1": {
+        "title": "1. Complete Assessment",
+        "description": "Answer questions about your skin type, concerns, and lifestyle factors to help us understand your unique needs."
+      },
+      "step2": {
+        "title": "2. Get Personalized Routines",
+        "description": "Receive custom morning and evening skincare routines with product recommendations tailored to your skin profile."
+      },
+      "step3": {
+        "title": "3. Track Your Progress",
+        "description": "Monitor your skin's improvement over time and receive updated recommendations as your skin evolves."
+      }
+    },
+    "testimonials": {
+      "title": "What Our Users Say",
+      "subtitle": "Real results from real people",
+      "testimonial1": {
+        "text": "After struggling with acne for years, Dalal created a routine that actually works for me. My skin is clearer than it's been in a decade!",
+        "name": "Sarah M.",
+        "duration": "Customer for 6 months"
+      },
+      "testimonial2": {
+        "text": "The personalized recommendations have saved me so much money on products that weren't right for my skin type. My redness is gone and my skin has never looked better!",
+        "name": "Jessica K.",
+        "duration": "Customer for 1 year"
+      },
+      "testimonial3": {
+        "text": "As someone with sensitive skin, finding products that don't cause irritation has been challenging. Dalal recommended gentle products that have transformed my skin!",
+        "name": "Michael T.",
+        "duration": "Customer for 3 months"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Skincare Routine?",
+      "subtitle": "Join thousands of users who have discovered their perfect skincare routine with Dalal.",
+      "button": "Start Your Free Assessment"
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last Updated: {{date}}",
+    "sections": {
+      "informationCollection": {
+        "title": "1. Information We Collect",
+        "description": "We collect information that you provide directly to us, including but not limited to:",
+        "items": [
+          "Personal information (name, email address)",
+          "Health-related information you choose to share",
+          "Usage data and preferences"
+        ]
+      },
+      "informationUsage": {
+        "title": "2. How We Use Your Information",
+        "description": "We use the collected information to:",
+        "items": [
+          "Provide and improve our services",
+          "Personalize your experience",
+          "Communicate with you about our services",
+          "Ensure the security of our application"
+        ]
+      },
+      "dataSecurity": {
+        "title": "3. Data Security",
+        "description": "We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security."
+      },
+      "medicalData": {
+        "title": "4. Medical Data Disclaimer",
+        "description": "While we take measures to protect your health-related information, we cannot guarantee the security of medical data transmitted through our application. You acknowledge that any health-related information you choose to share is done at your own risk."
+      },
+      "thirdParty": {
+        "title": "5. Third-Party Services",
+        "description": "Our application may contain links to third-party websites or services. We are not responsible for the privacy practices or content of these third-party sites."
+      },
+      "policyChanges": {
+        "title": "6. Changes to Privacy Policy",
+        "description": "We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date."
+      },
+      "contact": {
+        "title": "7. Contact Us",
+        "description": "If you have any questions about this Privacy Policy, please contact us at privacy@dalal.com."
+      }
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last Updated: {{date}}",
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptance of Terms",
+        "description": "By accessing and using this application, you accept and agree to be bound by the terms and provision of this agreement."
+      },
+      "medicalDisclaimer": {
+        "title": "2. Medical Disclaimer",
+        "description": "The recommendations and information provided by this application are for informational purposes only and are not intended as medical advice. The content is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.",
+        "additional": "Never disregard professional medical advice or delay in seeking it because of something you have read or received through this application."
+      },
+      "userResponsibility": {
+        "title": "3. User Responsibility",
+        "description": "You acknowledge that you are solely responsible for your use of this application and any decisions or actions you take based on the information provided. We shall not be liable for any direct, indirect, incidental, consequential, or exemplary damages resulting from your use of this application."
+      },
+      "liability": {
+        "title": "4. Limitation of Liability",
+        "description": "To the maximum extent permitted by law, we disclaim all liability for any loss, damage, or injury resulting from your use of this application. This includes, but is not limited to, any errors or omissions in the content, any loss or damage of any kind incurred as a result of the use of any content posted, transmitted, or otherwise made available via the application."
+      },
+      "changes": {
+        "title": "5. Changes to Terms",
+        "description": "We reserve the right to modify these terms at any time. We will notify users of any changes by updating the \"Last Updated\" date of these terms. Your continued use of the application following the posting of revised terms means that you accept and agree to the changes."
+      },
+      "contact": {
+        "title": "6. Contact Information",
+        "description": "If you have any questions about these Terms of Service, please contact us at support@dalal.com."
+      }
+    }
   }
 }

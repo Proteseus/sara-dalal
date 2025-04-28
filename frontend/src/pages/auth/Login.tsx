@@ -6,6 +6,7 @@ import Layout from '../../components/layout/Layout';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
+import { useTranslation } from 'react-i18next';
 
 interface FormData {
   email: string;
@@ -13,6 +14,7 @@ interface FormData {
 }
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const { authState, login, clearError } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -26,15 +28,15 @@ const Login: React.FC = () => {
     const newErrors: Partial<FormData> = {};
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('auth.login.validation.emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = t('auth.login.validation.emailInvalid');
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('auth.login.validation.passwordRequired');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('auth.login.validation.passwordLength');
     }
     
     setErrors(newErrors);
@@ -73,8 +75,8 @@ const Login: React.FC = () => {
       <div className="flex flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="font-serif text-3xl font-semibold text-gray-800">Welcome Back</h1>
-            <p className="mt-2 text-gray-600">Sign in to access your personalized skincare routine</p>
+            <h1 className="font-serif text-3xl font-semibold text-gray-800">{t('auth.login.title')}</h1>
+            <p className="mt-2 text-gray-600">{t('auth.login.subtitle')}</p>
           </div>
           
           <Card className="transition-all duration-300 hover:shadow-md">
@@ -86,12 +88,12 @@ const Login: React.FC = () => {
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <Input
-                label="Email"
+                label={t('auth.login.email')}
                 type="email"
                 id="email"
                 name="email"
                 autoComplete="email"
-                placeholder="your@email.com"
+                placeholder={t('auth.login.emailPlaceholder')}
                 value={formData.email}
                 onChange={handleChange}
                 error={errors.email}
@@ -100,12 +102,12 @@ const Login: React.FC = () => {
               />
               
               <Input
-                label="Password"
+                label={t('auth.login.password')}
                 type="password"
                 id="password"
                 name="password"
                 autoComplete="current-password"
-                placeholder="••••••"
+                placeholder={t('auth.login.passwordPlaceholder')}
                 value={formData.password}
                 onChange={handleChange}
                 error={errors.password}
@@ -122,13 +124,13 @@ const Login: React.FC = () => {
                     className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                    Remember me
+                    {t('auth.login.rememberMe')}
                   </label>
                 </div>
                 
                 <div className="text-sm">
                   <a href="#" className="font-medium text-primary hover:text-primary-dark transition-colors">
-                    Forgot password?
+                    {t('auth.login.forgotPassword')}
                   </a>
                 </div>
               </div>
@@ -138,15 +140,15 @@ const Login: React.FC = () => {
                 fullWidth
                 isLoading={authState.isLoading}
               >
-                Sign in
+                {t('auth.login.signIn')}
               </Button>
             </form>
             
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
+                {t('auth.login.noAccount')}{' '}
                 <Link to="/register" className="font-medium text-primary hover:text-primary-dark transition-colors">
-                  Sign up now
+                  {t('auth.login.signUp')}
                 </Link>
               </p>
             </div>

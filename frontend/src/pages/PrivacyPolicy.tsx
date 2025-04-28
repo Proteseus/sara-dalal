@@ -1,94 +1,97 @@
 import React from 'react';
 import Layout from '../components/layout/Layout';
+import { useTranslation } from 'react-i18next';
 
 const PrivacyPolicy: React.FC = () => {
+  const { t } = useTranslation();
+  const currentDate = new Date().toLocaleDateString();
+
   return (
     <Layout>
       <div className="min-h-screen bg-background py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-white rounded-xl shadow-soft p-8">
             <h1 className="font-serif text-4xl font-bold text-gray-800 mb-6">
-              Privacy Policy
+              {t('privacy.title')}
             </h1>
             
             <div className="mb-8">
               <p className="text-gray-600">
-                Last Updated: {new Date().toLocaleDateString()}
+                {t('privacy.lastUpdated', { date: currentDate })}
               </p>
             </div>
 
             <div className="space-y-8">
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  1. Information We Collect
+                  {t('privacy.sections.informationCollection.title')}
                 </h2>
                 <p className="text-gray-600 mb-4">
-                  We collect information that you provide directly to us, including but not limited to:
+                  {t('privacy.sections.informationCollection.description')}
                 </p>
                 <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                  <li>Personal information (name, email address)</li>
-                  <li>Health-related information you choose to share</li>
-                  <li>Usage data and preferences</li>
+                  {(t('privacy.sections.informationCollection.items', { returnObjects: true }) as string[]).map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                  ))}
                 </ul>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  2. How We Use Your Information
+                  {t('privacy.sections.informationUsage.title')}
                 </h2>
                 <p className="text-gray-600 mb-4">
-                  We use the collected information to:
+                  {t('privacy.sections.informationUsage.description')}
                 </p>
                 <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                  <li>Provide and improve our services</li>
-                  <li>Personalize your experience</li>
-                  <li>Communicate with you about our services</li>
-                  <li>Ensure the security of our application</li>
+                  {(t('privacy.sections.informationUsage.items', { returnObjects: true }) as string[]).map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                  ))}
                 </ul>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  3. Data Security
+                  {t('privacy.sections.dataSecurity.title')}
                 </h2>
                 <p className="text-gray-600">
-                  We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
+                  {t('privacy.sections.dataSecurity.description')}
                 </p>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  4. Medical Data Disclaimer
+                  {t('privacy.sections.medicalData.title')}
                 </h2>
                 <p className="text-gray-600">
-                  While we take measures to protect your health-related information, we cannot guarantee the security of medical data transmitted through our application. You acknowledge that any health-related information you choose to share is done at your own risk.
+                  {t('privacy.sections.medicalData.description')}
                 </p>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  5. Third-Party Services
+                  {t('privacy.sections.thirdParty.title')}
                 </h2>
                 <p className="text-gray-600">
-                  Our application may contain links to third-party websites or services. We are not responsible for the privacy practices or content of these third-party sites.
+                  {t('privacy.sections.thirdParty.description')}
                 </p>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  6. Changes to Privacy Policy
+                  {t('privacy.sections.policyChanges.title')}
                 </h2>
                 <p className="text-gray-600">
-                  We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
+                  {t('privacy.sections.policyChanges.description')}
                 </p>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  7. Contact Us
+                  {t('privacy.sections.contact.title')}
                 </h2>
                 <p className="text-gray-600">
-                  If you have any questions about this Privacy Policy, please contact us at privacy@dalal.com.
+                  {t('privacy.sections.contact.description')}
                 </p>
               </section>
             </div>

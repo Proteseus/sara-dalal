@@ -6,6 +6,7 @@ import Layout from '../../components/layout/Layout';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
+import { useTranslation } from 'react-i18next';
 
 interface FormData {
   firstName: string;
@@ -16,6 +17,7 @@ interface FormData {
 }
 
 const Register: React.FC = () => {
+  const { t } = useTranslation();
   const { authState, register, clearError } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -32,27 +34,27 @@ const Register: React.FC = () => {
     const newErrors: Partial<FormData> = {};
     
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+      newErrors.firstName = t('auth.register.validation.firstNameRequired');
     }
     
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+      newErrors.lastName = t('auth.register.validation.lastNameRequired');
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('auth.register.validation.emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = t('auth.register.validation.emailInvalid');
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('auth.register.validation.passwordRequired');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('auth.register.validation.passwordLength');
     }
     
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('auth.register.validation.passwordsMatch');
     }
     
     setErrors(newErrors);
@@ -92,8 +94,8 @@ const Register: React.FC = () => {
       <div className="flex flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="font-serif text-3xl font-semibold text-gray-800">Create Account</h1>
-            <p className="mt-2 text-gray-600">Sign up to get personalized skincare routines</p>
+            <h1 className="font-serif text-3xl font-semibold text-gray-800">{t('auth.register.title')}</h1>
+            <p className="mt-2 text-gray-600">{t('auth.register.subtitle')}</p>
           </div>
           
           <Card className="transition-all duration-300 hover:shadow-md">
@@ -106,12 +108,12 @@ const Register: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Input
-                  label="First Name"
+                  label={t('auth.register.firstName')}
                   type="text"
                   id="firstName"
                   name="firstName"
                   autoComplete="given-name"
-                  placeholder="Jane"
+                  placeholder={t('auth.register.firstNamePlaceholder')}
                   value={formData.firstName}
                   onChange={handleChange}
                   error={errors.firstName}
@@ -120,12 +122,12 @@ const Register: React.FC = () => {
                 />
                 
                 <Input
-                  label="Last Name"
+                  label={t('auth.register.lastName')}
                   type="text"
                   id="lastName"
                   name="lastName"
                   autoComplete="family-name"
-                  placeholder="Doe"
+                  placeholder={t('auth.register.lastNamePlaceholder')}
                   value={formData.lastName}
                   onChange={handleChange}
                   error={errors.lastName}
@@ -135,12 +137,12 @@ const Register: React.FC = () => {
               </div>
               
               <Input
-                label="Email"
+                label={t('auth.register.email')}
                 type="email"
                 id="email"
                 name="email"
                 autoComplete="email"
-                placeholder="your@email.com"
+                placeholder={t('auth.register.emailPlaceholder')}
                 value={formData.email}
                 onChange={handleChange}
                 error={errors.email}
@@ -149,12 +151,12 @@ const Register: React.FC = () => {
               />
               
               <Input
-                label="Password"
+                label={t('auth.register.password')}
                 type="password"
                 id="password"
                 name="password"
                 autoComplete="new-password"
-                placeholder="••••••"
+                placeholder={t('auth.register.passwordPlaceholder')}
                 value={formData.password}
                 onChange={handleChange}
                 error={errors.password}
@@ -163,12 +165,12 @@ const Register: React.FC = () => {
               />
               
               <Input
-                label="Confirm Password"
+                label={t('auth.register.confirmPassword')}
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
                 autoComplete="new-password"
-                placeholder="••••••"
+                placeholder={t('auth.register.confirmPasswordPlaceholder')}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 error={errors.confirmPassword}
@@ -188,13 +190,13 @@ const Register: React.FC = () => {
                 </div>
                 <div className="ml-3 text-sm">
                   <label htmlFor="terms" className="text-gray-600">
-                    I agree to the{' '}
+                    {t('auth.register.terms')}{' '}
                     <a href="/terms" className="font-medium text-primary hover:text-primary-dark transition-colors">
-                      Terms of Service
+                      {t('auth.register.termsLink')}
                     </a>{' '}
-                    and{' '}
+                    {t('auth.register.and')}{' '}
                     <a href="/privacy" className="font-medium text-primary hover:text-primary-dark transition-colors">
-                      Privacy Policy
+                      {t('auth.register.privacyLink')}
                     </a>
                   </label>
                 </div>
@@ -212,7 +214,7 @@ const Register: React.FC = () => {
                 </div>
                 <div className="ml-3 text-sm">
                   <label htmlFor="disclaimer" className="text-gray-600">
-                    I understand that recommendations provided by Dalal are merely informational and not medical advices
+                    {t('auth.register.disclaimer')}
                   </label>
                 </div>
               </div>
@@ -222,15 +224,15 @@ const Register: React.FC = () => {
                 fullWidth
                 isLoading={authState.isLoading}
               >
-                Create Account
+                {t('auth.register.createAccount')}
               </Button>
             </form>
             
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{' '}
+                {t('auth.register.hasAccount')}{' '}
                 <Link to="/login" className="font-medium text-primary hover:text-primary-dark transition-colors">
-                  Sign in
+                  {t('auth.register.signIn')}
                 </Link>
               </p>
             </div>
