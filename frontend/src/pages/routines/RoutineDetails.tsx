@@ -318,7 +318,7 @@ const RoutineDetails: React.FC = () => {
                         <StarIcon
                           key={star}
                           className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                            star <= (ratings[step.product.id] || 0)
+                            star <= (step.product.feedback[0]?.rating || 0)
                               ? 'text-yellow-400'
                               : 'text-gray-300'
                           }`}

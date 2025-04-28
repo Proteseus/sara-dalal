@@ -104,7 +104,12 @@ export const getUserRoutine = async (req, res) => {
           include: {
             product: {
               include: {
-                category: true
+                category: true,
+                feedback: {
+                  select: {
+                    rating: true
+                  }
+                }
               }
             },
             alternatives: true

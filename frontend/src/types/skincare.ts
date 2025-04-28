@@ -25,8 +25,17 @@ export interface Product {
   ingredients: string[];
   isDay?: boolean;
   isNight?: boolean;
+  feedback: Feedback[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface Feedback {
+  id: number;
+  userId: number;
+  productId: number;
+  rating: number;
+  comment: string;
 }
 
 export interface RoutineStep {
