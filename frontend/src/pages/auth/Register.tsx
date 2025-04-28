@@ -200,6 +200,23 @@ const Register: React.FC = () => {
                 </div>
               </div>
               
+              <div className="flex items-start">
+                <div className="flex items-center h-5">
+                  <input
+                    id="disclaimer"
+                    name="disclaimer"
+                    type="checkbox"
+                    required
+                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label htmlFor="disclaimer" className="text-gray-600">
+                    I understand that recommendations provided by Dalal are merely informational and not medical advices
+                  </label>
+                </div>
+              </div>
+
               <Button
                 type="submit"
                 fullWidth
