@@ -16,11 +16,49 @@ const generateRoutine = async (userId, recommendedProducts, skinProfile) => {
     8: { name: 'Sunscreen', order: 8 }
   };
 
+  // Define treatment types within each category
+  const treatmentTypes = {
+    Cleanser: {
+      oil: ['Oil Cleanser', 'Cleansing Balm', 'Cleansing Oil'],
+      water: ['Foaming Cleanser', 'Gel Cleanser', 'Cream Cleanser']
+    },
+    Toner: {
+      hydrating: ['Hydrating Toner', 'Essence Toner', 'pH Balancing Toner'],
+      exfoliating: ['AHA Toner', 'BHA Toner', 'PHA Toner'],
+      treatment: ['Treatment Toner', 'Medicated Toner']
+    },
+    Serum: {
+      treatment: ['Vitamin C', 'Retinol', 'Niacinamide', 'Hyaluronic Acid', 'Peptide'],
+      targeted: ['Acne Treatment', 'Brightening', 'Anti-Aging', 'Hydration', 'Soothing']
+    },
+    Moisturizer: {
+      basic: ['Light Moisturizer', 'Gel Cream', 'Cream'],
+      treatment: ['Treatment Cream', 'Night Cream', 'Sleeping Mask'],
+      barrier: ['Barrier Cream', 'Ceramide Cream']
+    },
+    Exfoliant: {
+      chemical: ['AHA', 'BHA', 'PHA', 'Enzyme'],
+      physical: ['Gentle Scrub', 'Exfoliating Pad']
+    },
+    Scrub: {
+      gentle: ['Gentle Scrub', 'Sugar Scrub'],
+      deep: ['Deep Scrub', 'Clay Scrub']
+    },
+    'Eye Cream': {
+      basic: ['Basic Eye Cream', 'Hydrating Eye Cream'],
+      treatment: ['Anti-Aging Eye Cream', 'Brightening Eye Cream']
+    },
+    Sunscreen: {
+      daily: ['Daily Sunscreen', 'Light Sunscreen'],
+      treatment: ['Tinted Sunscreen', 'Mineral Sunscreen']
+    }
+  };
+
   // First, create the routine
   const routine = await prisma.userRoutine.create({
     data: {
       userId,
-      name: 'Personalized Skincare Routine',
+      name: 'Comprehensive Skincare Routine',
       isActive: true
     }
   });
@@ -48,29 +86,47 @@ const generateRoutine = async (userId, recommendedProducts, skinProfile) => {
       productsByCategory[product.categoryId].push(product);
     });
 
-    // Always include cleanser first if available
+    // Helper function to add multiple products from the same category
+    const addCategoryProducts = (categoryId, category, maxProducts = 3) => {
+      const categoryProducts = productsByCategory[categoryId];
+      if (categoryProducts && categoryProducts.length > 0) {
+        const sortedProducts = [...categoryProducts].sort((a, b) => (b.score || 0) - (a.score || 0));
+        const selectedProducts = sortedProducts.slice(0, maxProducts);
+        
+        // Add each product as a separate step
+        selectedProducts.forEach((product, index) => {
+          timeSteps.push({
+            order: order++,
+            time,
+            categoryId: parseInt(categoryId),
+            categoryName: category.name,
+            notes: getCategoryNotes(category.name, time, product, index),
+            primaryProduct: product,
+            alternativeProducts: []
+          });
+        });
+      }
+    };
+
+    // Add multiple cleansers if available (double cleansing)
     const cleanserCategory = Object.entries(categoryOrder).find(([_, cat]) => cat.name === 'Cleanser');
     if (cleanserCategory) {
       const [categoryId, category] = cleanserCategory;
-      const cleanserProducts = productsByCategory[categoryId];
-      if (cleanserProducts && cleanserProducts.length > 0) {
-        const sortedCleansers = [...cleanserProducts].sort((a, b) => (b.score || 0) - (a.score || 0));
-        timeSteps.push({
-          order: order++,
-          time,
-          categoryId: parseInt(categoryId),
-          categoryName: category.name,
-          notes: getCategoryNotes(category.name, time),
-          primaryProduct: sortedCleansers[0],
-          alternativeProducts: sortedCleansers.slice(1, 4)
-        });
-        delete productsByCategory[categoryId]; // Remove cleanser from remaining categories
-      }
+      addCategoryProducts(categoryId, category, 2); // Allow up to 2 cleansers
+      delete productsByCategory[categoryId];
     }
 
-    // Create steps for remaining categories in order
+    // Add multiple serums if available
+    const serumCategory = Object.entries(categoryOrder).find(([_, cat]) => cat.name === 'Serum');
+    if (serumCategory) {
+      const [categoryId, category] = serumCategory;
+      addCategoryProducts(categoryId, category, 3); // Allow up to 3 serums
+      delete productsByCategory[categoryId];
+    }
+
+    // Create steps for remaining categories
     Object.entries(categoryOrder)
-      .filter(([_, cat]) => cat.name !== 'Cleanser') // Skip cleanser as it's already handled
+      .filter(([_, cat]) => !['Cleanser', 'Serum'].includes(cat.name))
       .forEach(([categoryId, category]) => {
         const categoryProducts = productsByCategory[categoryId];
         if (categoryProducts && categoryProducts.length > 0) {
@@ -80,7 +136,7 @@ const generateRoutine = async (userId, recommendedProducts, skinProfile) => {
             time,
             categoryId: parseInt(categoryId),
             categoryName: category.name,
-            notes: getCategoryNotes(category.name, time),
+            notes: getCategoryNotes(category.name, time, sortedProducts[0]),
             primaryProduct: sortedProducts[0],
             alternativeProducts: sortedProducts.slice(1, 4)
           });
@@ -90,21 +146,44 @@ const generateRoutine = async (userId, recommendedProducts, skinProfile) => {
     return timeSteps;
   };
 
-  // Helper function to get notes based on category and time
-  const getCategoryNotes = (category, time) => {
-    const notes = {
-      Cleanser: `Start your ${time.toLowerCase()} routine by gently massaging the cleanser onto damp skin in circular motions. Rinse thoroughly with lukewarm water and pat dry with a clean towel. This step removes impurities and prepares your skin for the next products.`,
-      Toner: `After cleansing, apply toner to a cotton pad and gently swipe across your face, or pat directly onto skin with clean hands. This helps restore your skin's natural pH balance and enhances absorption of subsequent products.`,
-      Serum: `Apply 2-3 drops of serum to clean fingertips and gently press into skin, focusing on areas of concern. Allow the serum to absorb fully before moving to the next step. Serums are concentrated treatments that target specific skin concerns.`,
-      Moisturizer: `Take a pea-sized amount of moisturizer and warm it between your fingertips. Gently press and massage into skin using upward motions. This step helps lock in moisture and strengthen your skin's natural barrier.`,
-      Exfoliant: `Apply exfoliant to clean, dry skin and gently massage in circular motions for 30-60 seconds. Rinse thoroughly with lukewarm water. This step helps remove dead skin cells and promote cell turnover. Use 2-3 times per week.`,
-      Scrub: `Apply scrub to damp skin and gently massage in circular motions for 1-2 minutes, avoiding the eye area. Rinse thoroughly with lukewarm water. This physical exfoliant helps remove dead skin cells and improve skin texture. Use 1-2 times per week.`,
-      'Eye Cream': `Using your ring finger (it applies the least pressure), gently pat a small amount of eye cream around the orbital bone, starting from the inner corner and moving outward. This delicate area requires special care and attention.`,
+  // Helper function to get notes based on category, time, and product
+  const getCategoryNotes = (category, time, product, index = 0) => {
+    const baseNotes = {
+      Cleanser: index === 0 ? 
+        `Start your ${time.toLowerCase()} routine with an oil-based cleanser to remove makeup, sunscreen, and excess sebum. Massage onto dry skin for 30-60 seconds, then emulsify with water and rinse thoroughly.` :
+        `Follow with a water-based cleanser to remove any remaining impurities. Massage onto damp skin for 30-60 seconds, then rinse thoroughly with lukewarm water.`,
+      Toner: `Apply toner to a cotton pad and gently swipe across your face, or pat directly onto skin with clean hands. This helps restore your skin's natural pH balance and enhances absorption of subsequent products.`,
+      Serum: `Apply 2-3 drops of serum to clean fingertips and gently press into skin, focusing on areas of concern. Allow the serum to absorb fully before moving to the next step.`,
+      Moisturizer: `Take a pea-sized amount of moisturizer and warm it between your fingertips. Gently press and massage into skin using upward motions.`,
+      Exfoliant: `Apply exfoliant to clean, dry skin and gently massage in circular motions for 30-60 seconds. Rinse thoroughly with lukewarm water. Use 2-3 times per week.`,
+      Scrub: `Apply scrub to damp skin and gently massage in circular motions for 1-2 minutes, avoiding the eye area. Rinse thoroughly with lukewarm water. Use 1-2 times per week.`,
+      'Eye Cream': `Using your ring finger (it applies the least pressure), gently pat a small amount of eye cream around the orbital bone, starting from the inner corner and moving outward.`,
       Sunscreen: time === 'Morning' ? 
-        `Apply sunscreen as the final step in your morning routine. Use a nickel-sized amount and dot it across your face, then blend in thoroughly. Reapply every 2 hours if exposed to direct sunlight. This is crucial for preventing premature aging and protecting against UV damage.` : 
+        `Apply sunscreen as the final step in your morning routine. Use a nickel-sized amount and dot it across your face, then blend in thoroughly. Reapply every 2 hours if exposed to direct sunlight.` : 
         'Not typically used in evening routine'
     };
-    return notes[category] || `Apply ${category.toLowerCase()} as part of your ${time.toLowerCase()} routine, following the product's specific instructions.`;
+
+    // Add specific treatment notes based on product ingredients
+    let treatmentNotes = '';
+    if (product.keyIngredients) {
+      const ingredients = product.keyIngredients.map(ing => ing.toLowerCase());
+      
+      if (ingredients.some(ing => ['retinol', 'retinal', 'retinaldehyde'].includes(ing))) {
+        treatmentNotes = ' Apply at night and start with 1-2 times per week, gradually increasing frequency.';
+      } else if (ingredients.some(ing => ['vitamin c', 'ascorbic acid', 'l-ascorbic acid'].includes(ing))) {
+        treatmentNotes = ' Apply in the morning and allow to absorb fully before applying other products.';
+      } else if (ingredients.some(ing => ['aha', 'glycolic acid', 'lactic acid'].includes(ing))) {
+        treatmentNotes = ' Use 2-3 times per week and follow with sunscreen in the morning.';
+      } else if (ingredients.some(ing => ['bha', 'salicylic acid'].includes(ing))) {
+        treatmentNotes = ' Use 2-3 times per week and focus on areas with congestion.';
+      } else if (ingredients.some(ing => ['niacinamide', 'vitamin b3'].includes(ing))) {
+        treatmentNotes = ' Can be used morning and night, helps with barrier repair and oil control.';
+      } else if (ingredients.some(ing => ['hyaluronic acid', 'sodium hyaluronate'].includes(ing))) {
+        treatmentNotes = ' Apply to damp skin and follow with moisturizer to lock in hydration.';
+      }
+    }
+
+    return baseNotes[category] + treatmentNotes;
   };
 
   // Create morning routine steps
