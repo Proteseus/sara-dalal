@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
                   key={product.id}
                   className="p-4 rounded-xl border border-gray-200 hover:border-primary transition-colors"
                 >
-                  <h3 className="font-medium text-gray-800 mb-2">{product.name}</h3>
+                  <h3 className="font-medium text-gray-800 mb-2">{product?.brand} {product.name}</h3>
                   <p className="text-sm text-gray-600 mb-4">{product.description}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-primary font-medium">﷼{product.price}</span>
