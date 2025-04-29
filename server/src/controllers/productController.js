@@ -4,10 +4,11 @@ const prisma = new PrismaClient();
 
 export const rateProduct = async (req, res) => {
   try {
-    const { productId, rating } = req.body;
+    const { productId, rating, routineId } = req.body;
     const userId = req.user.id;
 
     const i = parseInt(productId);
+    const r = parseInt(routineId);
 
     // Validate rating
     if (rating < 1 || rating > 5) {
@@ -17,9 +18,10 @@ export const rateProduct = async (req, res) => {
     // Create or update feedback
     const productFeedback = await prisma.userFeedback.upsert({
       where: {
-        userId_productId: {
+        userId_productId_routineId: {
           userId,
-          productId: i
+          productId: i,
+          routineId: r || null
         }
       },
       update: {
@@ -28,6 +30,7 @@ export const rateProduct = async (req, res) => {
       create: {
         userId,
         productId: i,
+        routineId: r || null,
         rating
       }
     });

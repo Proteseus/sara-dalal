@@ -115,11 +115,12 @@ const RoutineDetails: React.FC = () => {
     }));
   };
 
-  const handleRating = async (productId: number, rating: number) => {
+  const handleRating = async (productId: number, routineId: number, rating: number) => {
     if (!authState.user) return;
     try {
-      await rateProduct(productId, rating, authState.user.token);
-      setRatings(prev => ({ ...prev, [productId]: rating }));
+      await rateProduct(productId, routineId, rating, authState.user.token);
+      // Refresh routine data to get updated ratings
+      await fetchRoutine();
     } catch (error) {
       console.error('Error rating product:', error);
     }
@@ -326,7 +327,7 @@ const RoutineDetails: React.FC = () => {
                               ? 'text-yellow-400'
                               : 'text-gray-300'
                           }`}
-                          onClick={() => handleRating(step.product.id, star)}
+                          onClick={() => handleRating(step.product.id, routine.id, star)}
                         />
                       ))}
                     </div>
@@ -369,7 +370,7 @@ const RoutineDetails: React.FC = () => {
                                     ? 'text-yellow-400'
                                     : 'text-gray-300'
                                 }`}
-                                onClick={() => handleRating(alternative.productId, star)}
+                                onClick={() => handleRating(alternative.productId, routine.id, star)}
                               />
                             ))}
                           </div>

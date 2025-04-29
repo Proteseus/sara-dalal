@@ -106,6 +106,10 @@ export const getUserRoutine = async (req, res) => {
               include: {
                 category: true,
                 feedback: {
+                  where: {
+                    userId: userId,
+                    routineId: i
+                  },
                   select: {
                     rating: true
                   }
